@@ -7,6 +7,8 @@
 | **每日自动备份 workspace** | 凌晨 2:00 | Git 自动 commit + push | ✅ 已启用 |
 | **每日中午备份 workspace** | 中午 12:30 | Git 自动 commit + push | ✅ 已启用 |
 | **每日系统健康检查与维护** | 早上 6:00 | 系统检查 + 清理 + 报告 | ✅ 已启用 |
+| **每周自动升级软件** | 周一 3:00 | 系统软件 + npm/pnpm 包 + OpenClaw 技能 | ✅ 已启用 |
+| **每周自动清理系统垃圾** | 周日 4:00 | 缓存 + 日志 + 临时文件 + 回收站 | ✅ 已启用 |
 
 ---
 
@@ -42,7 +44,8 @@
 |------|------|
 | `report` | 生成完整运维报告（默认） |
 | `check` | 快速检查资源、服务、网络 |
-| `clean` | 清理 apt 缓存、journal 日志、临时文件 |
+| `clean` | 清理 apt 缓存、journal 日志、临时文件、系统垃圾 |
+| `upgrade` | 自动升级系统软件、npm/pnpm 包、OpenClaw 技能 |
 | `restart` | 重启 OpenClaw Gateway 服务 |
 | `verify` | 验证 Git 备份状态 |
 

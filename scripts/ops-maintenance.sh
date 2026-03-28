@@ -53,6 +53,36 @@ check_services() {
     log "OpenClaw 进程数：${PROC_COUNT}"
 }
 
+# 自动升级软件
+upgrade_system() {
+    log "=== 自动升级软件 ==="
+    
+    # 更新软件源
+    log "🔄 更新软件源..."
+    apt-get update -qq 2>/dev/null && log "✅ 软件源已更新" || log "⚠️ 软件源更新失败"
+    
+    # 升级系统软件
+    log "🔄 升级系统软件..."
+    DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq 2>/dev/null && log "✅ 系统软件已升级" || log "⚠️ 系统软件升级失败"
+    
+    # 清理升级缓存
+    apt-get autoremove -y -qq 2>/dev/null && log "✅ 升级缓存已清理" || log "⚠️ 缓存清理失败"
+    
+    # 升级 npm 全局包
+    log "🔄 升级 npm 全局包..."
+    npm update -g --silent 2>/dev/null && log "✅ npm 全局包已升级" || log "⚠️ npm 包升级失败"
+    
+    # 升级 pnpm 全局包
+    log "🔄 升级 pnpm 全局包..."
+    pnpm update -g --silent 2>/dev/null && log "✅ pnpm 全局包已升级" || log "⚠️ pnpm 包升级失败"
+    
+    # 升级 OpenClaw 技能
+    log "🔄 升级 OpenClaw 技能..."
+    cd "$WORKSPACE" && openclaw skills update --all --silent 2>/dev/null && log "✅ OpenClaw 技能已升级" || log "⚠️ OpenClaw 技能升级失败"
+    
+    log "✅ 系统升级完成"
+}
+
 # 清理操作
 clean_system() {
     log "=== 系统清理 ==="
@@ -68,6 +98,29 @@ clean_system() {
     
     # 旧的内核（保留最近 2 个）
     # apt-get autoremove -y 2>/dev/null && log "✅ 旧内核已清理"
+    
+    # 系统垃圾清理
+    log "🗑️ 清理系统垃圾..."
+    
+    # 浏览器缓存
+    rm -rf ~/.cache/* 2>/dev/null && log "✅ 浏览器缓存已清理"
+    
+    # npm 缓存
+    npm cache clean --force 2>/dev/null && log "✅ npm 缓存已清理"
+    
+    # pnpm 缓存
+    pnpm store prune --silent 2>/dev/null && log "✅ pnpm 缓存已清理"
+    
+    # Git 垃圾
+    cd "$WORKSPACE" && git gc --prune=now --quiet 2>/dev/null && log "✅ Git 垃圾已清理"
+    
+    # 日志文件清理（保留最近 7 天）
+    find /var/log -type f -name "*.log" -mtime +7 -delete 2>/dev/null && log "✅ 7 天前日志已清理"
+    
+    # 回收站清理
+    rm -rf ~/.local/share/Trash/* 2>/dev/null && log "✅ 回收站已清理"
+    
+    log "✅ 系统清理完成"
 }
 
 # 重启服务
