@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>典哥的个人作品集 | 小 Q 制作</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --dark: #2d3748;
+            --light: #f7fafc;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -100px;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-30px); }
+        }
+        
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            max-width: 800px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+        
+        .hero-btn {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: white;
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+        
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 关于我 */
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 4rem;
+            font-size: 1.1rem;
+        }
+        
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-image {
+            text-align: center;
+        }
+        
+        .avatar {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+        
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .about-text p {
+            color: #4a5568;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        
+        .tag {
+            padding: 0.5rem 1.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+        
+        /* 作品展示 */
+        .portfolio {
+            background: var(--light);
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .portfolio-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .portfolio-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+        
+        .card-header {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        .card-body h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .card-body p {
+            color: #718096;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-tag {
+            padding: 0.3rem 0.8rem;
+            background: #edf2f7;
+            color: #4a5568;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .card-btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: transform 0.3s;
+        }
+        
+        .card-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* 联系方式 */
+        .contact {
+            text-align: center;
+        }
+        
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .contact-card {
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .contact-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-card p {
+            color: #718096;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        
+        footer p {
+            opacity: 0.8;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.1rem; }
+            .nav-links { display: none; }
+            .section { padding: 4rem 1rem; }
+            .section-title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">典哥的作品集</div>
+            <ul class="nav-links">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#portfolio">作品</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>你好，我是典哥 👋</h1>
+            <p>创业者 | 探索者 | 终身学习者</p>
+            <p>用科技提升效率，用创新改变生活</p>
+            <a href="#portfolio" class="hero-btn">查看我的作品</a>
+        </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section class="section" id="about">
+        <h2 class="section-title">关于我</h2>
+        <p class="section-subtitle">让我介绍一下自己</p>
+        
+        <div class="about-grid">
+            <div class="about-image">
+                <div class="avatar">👨‍💼</div>
+            </div>
+            <div class="about-text">
+                <h3>典哥</h3>
+                <p>你好！我是一名热爱探索新事物的创业者。对科技充满好奇，正在学习用 AI 提升工作效率。</p>
+                <p>相信简单生活，专注做好每一件事。喜欢尝试新鲜事物，保持学习，持续成长。</p>
+                <p>这个网站展示了我的一些小作品，都是在学习和实践中完成的。虽然不完美，但每一个都是成长的足迹。</p>
+                
+                <div class="tags">
+                    <span class="tag">🚀 创业</span>
+                    <span class="tag">🤖 AI 应用</span>
+                    <span class="tag">📱 互联网</span>
+                    <span class="tag">💼 管理</span>
+                    <span class="tag">📈 数据分析</span>
+                    <span class="tag">🎮 小游戏</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 作品展示 -->
+    <section class="portfolio section" id="portfolio">
+        <h2 class="section-title">我的作品</h2>
+        <p class="section-subtitle">精心打造的每一个项目</p>
+        
+        <div class="portfolio-grid">
+            <!-- 作品 1 -->
+            <div class="portfolio-card">
+                <div class="card-header">🎮</div>
+                <div class="card-body">
+                    <h3>猜数字游戏</h3>
+                    <p>经典的猜数字小游戏，考验你的逻辑和运气。看看你能用几次猜中答案！</p>
+                    <div class="card-tags">
+                        <span class="card-tag">HTML</span>
+                        <span class="card-tag">CSS</span>
+                        <span class="card-tag">JavaScript</span>
+                        <span class="card-tag">游戏</span>
+                    </div>
+                    <a href="https://gitee.com/wang-dian-001/guess-number-game/blob/master/guess-number.html" class="card-btn" target="_blank">立即体验</a>
+                </div>
+            </div>
+
+            <!-- 作品 2 -->
+            <div class="portfolio-card">
+                <div class="card-header">👆</div>
+                <div class="card-body">
+                    <h3>点击挑战</h3>
+                    <p>10 秒钟极限挑战！看看你的手速有多快，能否打破自己的记录？</p>
+                    <div class="card-tags">
+                        <span class="card-tag">HTML</span>
+                        <span class="card-tag">CSS</span>
+                        <span class="card-tag">JavaScript</span>
+                        <span class="card-tag">休闲</span>
+                    </div>
+                    <a href="https://gitee.com/wang-dian-001/guess-number-game/blob/master/click-game.html" class="card-btn" target="_blank">立即挑战</a>
+                </div>
+            </div>
+
+            <!-- 作品 3 -->
+            <div class="portfolio-card">
+                <div class="card-header">🌐</div>
+                <div class="card-body">
+                    <h3>个人主页</h3>
+                    <p>精美的个人展示页面，可以分享给朋友，让他们更好地了解你。</p>
+                    <div class="card-tags">
+                        <span class="card-tag">HTML</span>
+                        <span class="card-tag">CSS</span>
+                        <span class="card-tag">响应式</span>
+                        <span class="card-tag">展示</span>
+                    </div>
+                    <a href="https://gitee.com/wang-dian-001/guess-number-game/blob/master/index.html" class="card-btn" target="_blank">查看详情</a>
+                </div>
+            </div>
+
+            <!-- 作品 4 -->
+            <div class="portfolio-card">
+                <div class="card-header">🐍</div>
+                <div class="card-body">
+                    <h3>文件备份工具</h3>
+                    <p>实用的 Python 脚本，帮你自动备份重要文件，保护数据安全。</p>
+                    <div class="card-tags">
+                        <span class="card-tag">Python</span>
+                        <span class="card-tag">工具</span>
+                        <span class="card-tag">自动化</span>
+                        <span class="card-tag">实用</span>
+                    </div>
+                    <a href="https://gitee.com/wang-dian-001/guess-number-game/blob/master/backup-files.py" class="card-btn" target="_blank">查看代码</a>
+                </div>
+            </div>
+
+            <!-- 作品 5 -->
+            <div class="portfolio-card">
+                <div class="card-header">📦</div>
+                <div class="card-body">
+                    <h3>Gitee 仓库</h3>
+                    <p>所有作品的代码仓库，开源共享，欢迎交流学习。</p>
+                    <div class="card-tags">
+                        <span class="card-tag">Git</span>
+                        <span class="card-tag">Gitee</span>
+                        <span class="card-tag">开源</span>
+                        <span class="card-tag">协作</span>
+                    </div>
+                    <a href="https://gitee.com/wang-dian-001/guess-number-game" class="card-btn" target="_blank">访问仓库</a>
+                </div>
+            </div>
+
+            <!-- 作品 6 -->
+            <div class="portfolio-card">
+                <div class="card-header">🚀</div>
+                <div class="card-body">
+                    <h3>更多作品中...</h3>
+                    <p>持续学习和创作中，更多精彩作品即将上线，敬请期待！</p>
+                    <div class="card-tags">
+                        <span class="card-tag">敬请期待</span>
+                        <span class="card-tag">创作中</span>
+                    </div>
+                    <a href="#" class="card-btn">即将上线</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section class="section contact" id="contact">
+        <h2 class="section-title">联系我</h2>
+        <p class="section-subtitle">期待与你交流合作</p>
+        
+        <div class="contact-methods">
+            <div class="contact-card">
+                <div class="contact-icon">📧</div>
+                <h3>邮箱</h3>
+                <p>欢迎发送邮件交流</p>
+                <p style="margin-top: 1rem; color: var(--primary);">contact@diange.com</p>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-icon">💬</div>
+                <h3>微信</h3>
+                <p>扫码添加好友</p>
+                <p style="margin-top: 1rem; color: var(--primary);">diange2026</p>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-icon">🌐</div>
+                <h3>Gitee</h3>
+                <p>查看我的代码仓库</p>
+                <p style="margin-top: 1rem; color: var(--primary);">@wang-dian-001</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2026 典哥的个人作品集 | Made with ❤️ by 小 Q</p>
+        <p style="margin-top: 0.5rem;">🎉 感谢访问，期待与你交流！</p>
+    </footer>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.style.boxShadow = '0 4px 30px rgba(0,0,0,0.1)';
+            } else {
+                nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            }
+        });
+    </script>
+</body>
+</html>
