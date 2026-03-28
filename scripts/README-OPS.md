@@ -139,3 +139,45 @@ git push origin main
 ---
 
 _最后更新：2026-03-28_
+
+---
+
+## 🔄 Gateway 重启（解决响应变慢）
+
+### 问题现象
+- 早上响应快，晚上响应慢
+- 第二天早上又快了
+- 记忆搜索变慢
+
+### 原因
+- Node.js 进程内存轻微泄漏
+- 缓存积累
+- 向量数据库查询累积
+
+### 解决方案
+
+**每天下午 6 点自动重启：**
+```bash
+# 添加到 crontab
+crontab -e
+
+# 添加这行（每天 18:00 重启 Gateway）
+0 18 * * * systemctl restart openclaw-gateway
+```
+
+**手动重启：**
+```bash
+# 直接问我
+"重启 Gateway"
+"响应变慢了，优化一下"
+
+# 或手动执行
+systemctl restart openclaw-gateway
+```
+
+### 效果
+- 响应速度恢复如新
+- 清理缓存
+- 释放内存
+
+---

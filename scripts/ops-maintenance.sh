@@ -216,3 +216,25 @@ case "${1:-report}" in
         generate_report
         ;;
 esac
+
+# 重启 Gateway 服务（清理缓存）
+restart_gateway() {
+    log "=== 重启 Gateway 服务 ==="
+    
+    # 检查 Gateway 状态
+    if systemctl is-active --quiet openclaw-gateway 2>/dev/null; then
+        systemctl restart openclaw-gateway 2>/dev/null && log "✅ Gateway 已重启" || log "⚠️ Gateway 重启失败"
+    else
+        systemctl start openclaw-gateway 2>/dev/null && log "✅ Gateway 已启动" || log "⚠️ Gateway 启动失败"
+    fi
+    
+    # 等待服务就绪
+    sleep 5
+    
+    # 验证服务状态
+    if systemctl is-active --quiet openclaw-gateway 2>/dev/null; then
+        log "✅ Gateway 服务运行正常"
+    else
+        log "❌ Gateway 服务异常"
+    fi
+}
