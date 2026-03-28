@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>典哥的游戏乐园</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { color: white; text-align: center; margin-bottom: 30px; font-size: 2.5em; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .game-card { background: white; border-radius: 15px; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: transform 0.3s; }
+        .game-card:hover { transform: translateY(-5px); }
+        .game-card h2 { color: #667eea; margin-bottom: 10px; }
+        .game-card p { color: #666; margin-bottom: 15px; }
+        .game-card a { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 25px; text-decoration: none; border-radius: 25px; font-weight: bold; transition: opacity 0.3s; }
+        .game-card a:hover { opacity: 0.9; }
+        .footer { text-align: center; color: white; margin-top: 30px; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 典哥的游戏乐园</h1>
+        
+        <div class="game-card">
+            <h2>🔢 猜数字游戏</h2>
+            <p>猜一个 1-100 之间的数字，看看你几次能猜中！</p>
+            <a href="games/guess-number.html">开始游戏 →</a>
+        </div>
+        
+        <div class="game-card">
+            <h2>👆 点击挑战</h2>
+            <p>10 秒手速测试，看你能点击多少次！挑战你的手速极限！</p>
+            <a href="demo/click-game.html">开始挑战 →</a>
+        </div>
+        
+        <div class="game-card">
+            <h2>👤 个人主页</h2>
+            <p>典哥的个人展示页面</p>
+            <a href="demo/index.html">查看主页 →</a>
+        </div>
+        
+        <div class="game-card">
+            <h2>📁 作品集</h2>
+            <p>所有作品的展示页面</p>
+            <a href="demo/portfolio.html">查看作品集 →</a>
+        </div>
+        
+        <div class="footer">
+            <p>© 2026 典哥 | Powered by GitHub Pages</p>
+        </div>
+    </div>
+</body>
+</html>
