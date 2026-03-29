@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>别踩白块 - 简单版</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; color: #fff; overflow: hidden; }
+        .title { font-size: 36px; margin-bottom: 20px; }
+        .stats { display: flex; gap: 20px; margin-bottom: 20px; }
+        .stat-box { background: rgba(255,255,255,0.2); padding: 10px 25px; border-radius: 15px; text-align: center; }
+        .stat-label { font-size: 12px; opacity: 0.9; }
+        .stat-value { font-size: 28px; font-weight: bold; }
+        #gameBoard { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; margin-bottom: 20px; }
+        .tile { width: 70px; height: 100px; border-radius: 10px; cursor: pointer; transition: all 0.1s; }
+        .tile.black { background: #000; }
+        .tile.white { background: #fff; }
+        .tile:active { transform: scale(0.95); }
+        .tile.missed { background: #f44336 !important; }
+        .tile.clicked { background: #4CAF50 !important; }
+        .btn { padding: 15px 40px; background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; border: none; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .message { margin: 20px; padding: 20px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="title">🎹 别踩白块</div>
+    <div class="stats">
+        <div class="stat-box"><div class="stat-label">分数</div><div class="stat-value" id="score">0</div></div>
+        <div class="stat-box"><div class="stat-label">速度</div><div class="stat-value" id="speed">1x</div></div>
+        <div class="stat-box"><div class="stat-label">最佳</div><div class="stat-value" id="best">0</div></div>
+    </div>
+    <div id="gameBoard"></div>
+    <div class="message" id="message">只踩黑色块！别踩白色！</div>
+    <button class="btn" onclick="startGame()">▶️ 开始</button>
+    <script>
+        const board=document.getElementById('gameBoard');
+        let tiles=[], score=0, speed=1000, gameActive=false, best=parseInt(localStorage.getItem('dontstep-best')||0);
+        document.getElementById('best').textContent=best;
+        function startGame() {
+            if(gameActive) return;
+            score=0; speed=1000; gameActive=true;
+            document.getElementById('score').textContent='0';
+            document.getElementById('speed').textContent='1x';
+            document.getElementById('message').textContent='🎹 点点点点！别停！';
+            board.innerHTML='';
+            tiles=[];
+            for(let r=0;r<4;r++) {
+                tiles[r]=[];
+                for(let c=0;c<4;c++) {
+                    const tile=document.createElement('div');
+                    tile.className='tile white';
+                    tile.dataset.r=r; tile.dataset.c=c;
+                    tile.onclick=()=>hitTile(r,c);
+                    board.appendChild(tile);
+                    tiles[r][c]=tile;
+                }
+            }
+            spawnRow();
+        }
+        function spawnRow() {
+            if(!gameActive) return;
+            const row=Math.floor(Math.random()*4);
+            tiles[row].forEach((tile,c)=>{
+                if(Math.random()<0.25) {
+                    tile.className='tile black';
+                    tile.dataset.type='black';
+                } else {
+                    tile.className='tile white';
+                    tile.dataset.type='white';
+                }
+            });
+            setTimeout(()=>{
+                if(gameActive) {
+                    tiles[row].forEach(tile=>{
+                        if(tile.dataset.type==='black'&&!tile.classList.contains('clicked')) {
+                            tile.classList.add('missed');
+                            gameOver();
+                        }
+                    });
+                }
+            },speed);
+        }
+        function hitTile(r,c) {
+            if(!gameActive) return;
+            const tile=tiles[r][c];
+            if(tile.dataset.type==='black') {
+                score++;
+                document.getElementById('score').textContent=score;
+                tile.classList.add('clicked');
+                if(score%5===0) { speed=Math.max(300,speed-50); document.getElementById('speed').textContent=(1000/speed).toFixed(1)+'x'; }
+                setTimeout(()=>{ tile.className='tile white'; tile.dataset.type='white'; tile.classList.remove('clicked'); },200);
+            } else {
+                tile.classList.add('missed');
+                gameOver();
+            }
+        }
+        function gameOver() {
+            gameActive=false;
+            if(score>best) { best=score; localStorage.setItem('dontstep-best',best); document.getElementById('best').textContent=best; }
+            document.getElementById('message').textContent=`游戏结束！得分：${score} | 最佳：${best}`;
+        }
+    </script>
+</body>
+</html>

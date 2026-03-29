@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>放屁挑战 - 魔性音效</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; color: #fff; }
+        .title { font-size: 42px; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .stats { display: flex; gap: 20px; margin-bottom: 30px; }
+        .stat-box { background: rgba(255,255,255,0.2); padding: 15px 30px; border-radius: 15px; text-align: center; }
+        .stat-label { font-size: 14px; opacity: 0.9; }
+        .stat-value { font-size: 32px; font-weight: bold; }
+        .fart-btn { width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(45deg, #f5af19, #f12711); border: none; font-size: 80px; cursor: pointer; transition: all 0.1s; box-shadow: 0 10px 40px rgba(0,0,0,0.3); margin: 20px; animation: bounce 0.5s infinite alternate; }
+        .fart-btn:active { transform: scale(0.85); }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+        .fart-cloud { position: fixed; font-size: 60px; pointer-events: none; animation: floatAway 2s forwards; }
+        @keyframes floatAway { 0% { opacity: 1; transform: translate(0,0) scale(1); } 100% { opacity: 0; transform: translate(100px,-200px) scale(1.5); } }
+        .btn { padding: 15px 40px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; margin: 10px; }
+        .message { margin: 20px; padding: 20px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 20px; text-align: center; }
+        .combo { position: fixed; font-size: 36px; font-weight: bold; pointer-events: none; animation: pop 0.5s forwards; }
+        @keyframes pop { 0% { transform: scale(0); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+    <div class="title">💨 放屁挑战</div>
+    <div class="stats">
+        <div class="stat-box"><div class="stat-label">放屁次数</div><div class="stat-value" id="count">0</div></div>
+        <div class="stat-box"><div class="stat-label">连击</div><div class="stat-value" id="combo">0</div></div>
+        <div class="stat-box"><div class="stat-label">音量</div><div class="stat-value" id="volume">正常</div></div>
+    </div>
+    <button class="fart-btn" onclick="fart()">🍑</button>
+    <div class="message" id="message">点击屁股放屁！越快点越响！</div>
+    <div>
+        <button class="btn" onclick="resetGame()">🔄 重置</button>
+        <button class="btn" onclick="toggleAuto()">🤖 自动模式</button>
+    </div>
+    <script>
+        let count=0, combo=0, autoInterval=null, volumes=['正常','响亮','震耳','超级'];
+        const fartSounds=['💨','💨💨','💨💨💨','💥'];
+        function fart() {
+            count++; combo++;
+            document.getElementById('count').textContent=count;
+            document.getElementById('combo').textContent=combo;
+            const volIndex=Math.min(Math.floor(combo/10),3);
+            document.getElementById('volume').textContent=volumes[volIndex];
+            const cloud=document.createElement('div');
+            cloud.className='fart-cloud';
+            cloud.textContent=fartSounds[volIndex];
+            cloud.style.left=(Math.random()*200+window.innerWidth/2-100)+'px';
+            cloud.style.top=(window.innerHeight/2)+'px';
+            document.body.appendChild(cloud);
+            setTimeout(()=>cloud.remove(),2000);
+            if(combo%10===0) showCombo(`🔥${combo}连屁!`);
+        }
+        function showCombo(text) {
+            const combo=document.createElement('div');
+            combo.className='combo';
+            combo.textContent=text;
+            combo.style.left=(window.innerWidth/2-100)+'px';
+            combo.style.top=(window.innerHeight/3)+'px';
+            document.body.appendChild(combo);
+            setTimeout(()=>combo.remove(),500);
+        }
+        function resetGame() { count=0; combo=0; document.getElementById('count').textContent='0'; document.getElementById('combo').textContent='0'; document.getElementById('volume').textContent='正常'; if(autoInterval) { clearInterval(autoInterval); autoInterval=null; } }
+        function toggleAuto() {
+            if(autoInterval) { clearInterval(autoInterval); autoInterval=null; }
+            else { autoInterval=setInterval(fart,200); }
+        }
+    </script>
+</body>
+</html>

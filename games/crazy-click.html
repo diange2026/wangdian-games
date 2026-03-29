@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>疯狂点点点 - 手速挑战</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; color: #fff; }
+        .title { font-size: 42px; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .stats { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; justify-content: center; }
+        .stat-box { background: rgba(255,255,255,0.3); padding: 20px 35px; border-radius: 20px; text-align: center; min-width: 120px; }
+        .stat-label { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
+        .stat-value { font-size: 42px; font-weight: bold; }
+        #clickBtn { width: 250px; height: 250px; border-radius: 50%; background: linear-gradient(45deg, #f093fb, #f5576c); border: 8px solid rgba(255,255,255,0.5); font-size: 32px; font-weight: bold; color: white; cursor: pointer; transition: all 0.05s; box-shadow: 0 10px 40px rgba(0,0,0,0.3); margin-bottom: 30px; }
+        #clickBtn:active { transform: scale(0.9); box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+        #clickBtn.disabled { opacity: 0.5; cursor: not-allowed; }
+        .combo { position: fixed; font-size: 48px; font-weight: bold; pointer-events: none; animation: floatUp 0.8s forwards; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.5); } }
+        .btn { padding: 15px 40px; background: rgba(255,255,255,0.3); color: white; border: none; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; margin: 10px; }
+        .message { margin: 20px; padding: 20px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 20px; text-align: center; max-width: 500px; }
+        .rank { font-size: 28px; margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.2); border-radius: 15px; }
+    </style>
+</head>
+<body>
+    <div class="title">👆 疯狂点点点</div>
+    <div class="stats">
+        <div class="stat-box"><div class="stat-label">点击数</div><div class="stat-value" id="clicks">0</div></div>
+        <div class="stat-box"><div class="stat-label">手速</div><div class="stat-value" id="cps">0</div></div>
+        <div class="stat-box"><div class="stat-label">时间</div><div class="stat-value" id="timer">10s</div></div>
+        <div class="stat-box"><div class="stat-label">最佳</div><div class="stat-value" id="best">0</div></div>
+    </div>
+    <button id="clickBtn" onclick="handleClick()">点我！</button>
+    <div class="message" id="message">点击按钮开始！10 秒内疯狂点击！</div>
+    <div class="rank" id="rank"></div>
+    <div style="margin-top:20px;">
+        <button class="btn" onclick="startGame()">▶️ 开始</button>
+        <button class="btn" onclick="resetGame()">🔄 重置</button>
+    </div>
+    <script>
+        let clicks=0, timeLeft=10, gameActive=false, startTime, clickHistory=[], best=parseInt(localStorage.getItem('click-best')||0);
+        document.getElementById('best').textContent=best;
+        function startGame() {
+            if(gameActive) return;
+            clicks=0; timeLeft=10; gameActive=true; clickHistory=[];
+            document.getElementById('clicks').textContent='0';
+            document.getElementById('timer').textContent='10s';
+            document.getElementById('cps').textContent='0';
+            document.getElementById('clickBtn').disabled=false;
+            document.getElementById('clickBtn').classList.remove('disabled');
+            document.getElementById('message').textContent='👆 点点点点点！！！';
+            document.getElementById('rank').textContent='';
+            startTime=Date.now();
+            const timerInterval=setInterval(()=>{
+                timeLeft--;
+                document.getElementById('timer').textContent=timeLeft+'s';
+                const cps=timeLeft>0?Math.round(clicks/(10-timeLeft)*10)/10:0;
+                document.getElementById('cps').textContent=cps;
+                if(timeLeft<=0) {
+                    clearInterval(timerInterval);
+                    gameActive=false;
+                    document.getElementById('clickBtn').disabled=true;
+                    document.getElementById('clickBtn').classList.add('disabled');
+                    const finalCps=Math.round(clicks/10*10)/10;
+                    if(finalCps>best) { best=finalCps; localStorage.setItem('click-best',best); document.getElementById('best').textContent=best; }
+                    let rank='🥉 普通手速';
+                    if(finalCps>=8) rank='👑 单身 30 年手速！';
+                    else if(finalCps>=6) rank='🥇 非常快！';
+                    else if(finalCps>=4) rank='🥈 不错哦！';
+                    document.getElementById('message').textContent=`时间到！点击${clicks}次 | 手速${finalCps} CPS`;
+                    document.getElementById('rank').textContent=`你的等级：${rank}`;
+                }
+            },1000);
+        }
+        function handleClick() {
+            if(!gameActive) { startGame(); return; }
+            clicks++;
+            document.getElementById('clicks').textContent=clicks;
+            const now=Date.now();
+            clickHistory.push(now);
+            clickHistory=clickHistory.filter(t=>now-t<1000);
+            const cps=clickHistory.length;
+            document.getElementById('cps').textContent=cps);
+            showCombo(clicks);
+        }
+        function showCombo(num) {
+            const combo=document.createElement('div');
+            combo.className='combo';
+            combo.textContent=num>=100?`🔥${num}连击!`:num>=50?`💪${num}!`:num;
+            combo.style.left=(Math.random()*200+window.innerWidth/2-100)+'px';
+            combo.style.top=(window.innerHeight/2-50)+'px';
+            document.body.appendChild(combo);
+            setTimeout(()=>combo.remove(),800);
+        }
+        function resetGame() { clicks=0; timeLeft=10; gameActive=false; document.getElementById('clicks').textContent='0'; document.getElementById('timer').textContent='10s'; document.getElementById('cps').textContent='0'; document.getElementById('clickBtn').disabled=false; document.getElementById('clickBtn').classList.remove('disabled'); document.getElementById('message').textContent='点击按钮开始！10 秒内疯狂点击！'; document.getElementById('rank').textContent=''; }
+    </script>
+</body>
+</html>
