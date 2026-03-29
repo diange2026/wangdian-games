@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>猜数字大师 - 挑战你的逻辑思维</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .game-area {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .number-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .hint-area {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .hint-text {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .hint-count {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .history {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .history-number {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 5px;
+        }
+
+        .history-result {
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .daily-challenge {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .daily-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .daily-progress {
+            font-size: 14px;
+        }
+
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .modal-text {
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .modal-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .tutorial {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .tutorial-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .tutorial-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .step-number {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .example {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .ad-placeholder {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .ad-text {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #FFD700;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="title">🎯 猜数字大师</div>
+            <div class="subtitle">挑战你的逻辑思维</div>
+            <div class="rank-badge" id="rankBadge">青铜段位</div>
+        </div>
+
+        <!-- 每日挑战 -->
+        <div class="daily-challenge" id="dailyChallenge">
+            <div class="daily-title">📅 今日挑战</div>
+            <div class="daily-progress" id="dailyProgress">已完成 0/3 题</div>
+        </div>
+
+        <!-- 统计 -->
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="gamesPlayed">0</div>
+                <div class="stat-label">已玩游戏</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="gamesWon">0</div>
+                <div class="stat-label">获胜次数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="winRate">0%</div>
+                <div class="stat-label">胜率</div>
+            </div>
+        </div>
+
+        <!-- 新手教程（第一次显示） -->
+        <div class="tutorial" id="tutorial">
+            <div class="tutorial-title">🎮 如何游玩</div>
+            <div class="tutorial-step">
+                <div class="step-number">1</div>
+                <div>系统会随机生成一个<strong>4 位数字</strong>（每位数字不同）</div>
+            </div>
+            <div class="tutorial-step">
+                <div class="step-number">2</div>
+                <div>输入你猜的数字，系统会提示：</div>
+            </div>
+            <div class="tutorial-step">
+                <div class="step-number">3</div>
+                <div><strong>xA</strong> = 数字和位置都正确</div>
+            </div>
+            <div class="tutorial-step">
+                <div class="step-number">4</div>
+                <div><strong>xB</strong> = 数字正确但位置错误</div>
+            </div>
+            <div class="example">
+                <div class="example-title">📝 示例：</div>
+                <div>答案：1234</div>
+                <div>你猜：1356 → 提示：1A1B（1 位置对，3 数字对但位置错）</div>
+            </div>
+        </div>
+
+        <!-- 游戏区域 -->
+        <div class="game-area">
+            <div class="hint-area">
+                <div class="hint-text" id="hintText">输入 4 位数字开始猜</div>
+                <div class="hint-count">剩余次数：<span id="attemptCount">10</span>/10</div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" class="number-input" id="numberInput" placeholder="0000" maxlength="4" pattern="[0-9]*">
+                <button class="submit-btn" id="submitBtn">猜！</button>
+            </div>
+
+            <div class="history" id="history">
+                <!-- 历史记录会动态添加 -->
+            </div>
+        </div>
+
+        <!-- 广告位 -->
+        <div class="ad-placeholder">
+            <div class="ad-text">🎁 看广告获得提示（+1 次机会）</div>
+        </div>
+
+        <!-- 菜单按钮 -->
+        <div style="text-align: center;">
+            <button class="menu-btn" onclick="showTutorial()">📖 教程</button>
+            <button class="menu-btn" onclick="resetGame()">🔄 新游戏</button>
+            <button class="menu-btn" onclick="showRank()">🏆 段位</button>
+        </div>
+    </div>
+
+    <!-- 胜利弹窗 -->
+    <div class="modal" id="winModal">
+        <div class="modal-content">
+            <div class="modal-title">🎉 恭喜获胜！</div>
+            <div class="modal-text" id="winText"></div>
+            <button class="modal-btn" onclick="closeModal('winModal')">再来一局</button>
+            <button class="modal-btn" onclick="shareResult()">分享战绩</button>
+        </div>
+    </div>
+
+    <!-- 失败弹窗 -->
+    <div class="modal" id="loseModal">
+        <div class="modal-content">
+            <div class="modal-title">😅 再接再厉</div>
+            <div class="modal-text" id="loseText"></div>
+            <button class="modal-btn" onclick="closeModal('loseModal')">再来一局</button>
+        </div>
+    </div>
+
+    <script>
+        // 游戏状态
+        let targetNumber = '';
+        let attempts = 0;
+        let maxAttempts = 10;
+        let gameHistory = [];
+        let stats = {
+            played: 0,
+            won: 0,
+            winRate: 0
+        };
+        let dailyChallenge = {
+            completed: 0,
+            date: new Date().toDateString()
+        };
+
+        // 段位系统
+        const ranks = [
+            { name: '青铜', minWins: 0 },
+            { name: '白银', minWins: 5 },
+            { name: '黄金', minWins: 15 },
+            { name: '铂金', minWins: 30 },
+            { name: '钻石', minWins: 50 },
+            { name: '王者', minWins: 100 }
+        ];
+
+        // 初始化
+        function init() {
+            loadStats();
+            loadDailyChallenge();
+            resetGame();
+            updateUI();
+        }
+
+        // 生成随机数字（4 位，每位不同）
+        function generateTargetNumber() {
+            const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            let result = '';
+            for (let i = 0; i < 4; i++) {
+                const index = Math.floor(Math.random() * digits.length);
+                result += digits[index];
+                digits.splice(index, 1);
+            }
+            return result;
+        }
+
+        // 计算提示
+        function calculateHint(guess, target) {
+            let a = 0, b = 0;
+            for (let i = 0; i < 4; i++) {
+                if (guess[i] === target[i]) {
+                    a++;
+                } else if (target.includes(guess[i])) {
+                    b++;
+                }
+            }
+            return { a, b };
+        }
+
+        // 提交猜测
+        function submitGuess() {
+            const input = document.getElementById('numberInput');
+            const guess = input.value;
+
+            // 验证输入
+            if (guess.length !== 4 || !/^\d+$/.test(guess)) {
+                alert('请输入 4 位数字！');
+                return;
+            }
+
+            // 检查是否有重复数字
+            if (new Set(guess).size !== 4) {
+                alert('4 位数字必须不同！');
+                return;
+            }
+
+            attempts++;
+            const hint = calculateHint(guess, targetNumber);
+            gameHistory.push({ guess, hint });
+
+            // 添加到历史记录
+            addToHistory(guess, hint);
+
+            // 检查胜负
+            if (hint.a === 4) {
+                // 胜利
+                stats.played++;
+                stats.won++;
+                dailyChallenge.completed++;
+                saveStats();
+                saveDailyChallenge();
+                showWin(attempts);
+                createConfetti();
+            } else if (attempts >= maxAttempts) {
+                // 失败
+                stats.played++;
+                saveStats();
+                showLose();
+            } else {
+                // 继续
+                updateHint(hint);
+            }
+
+            input.value = '';
+            updateUI();
+        }
+
+        // 添加到历史记录
+        function addToHistory(guess, hint) {
+            const history = document.getElementById('history');
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.innerHTML = `
+                <div class="history-number">${guess}</div>
+                <div class="history-result">${hint.a}A${hint.b}B</div>
+            `;
+            history.insertBefore(item, history.firstChild);
+        }
+
+        // 更新提示
+        function updateHint(hint) {
+            const hintText = document.getElementById('hintText');
+            let text = '';
+            if (hint.a > 0 && hint.b > 0) {
+                text = `${hint.a}个数字位置正确，${hint.b}个数字存在但位置不对`;
+            } else if (hint.a > 0) {
+                text = `${hint.a}个数字位置正确`;
+            } else if (hint.b > 0) {
+                text = `${hint.b}个数字存在但位置不对`;
+            } else {
+                text = '数字都不存在，继续加油！';
+            }
+            hintText.textContent = text;
+        }
+
+        // 更新 UI
+        function updateUI() {
+            document.getElementById('attemptCount').textContent = maxAttempts - attempts;
+            document.getElementById('gamesPlayed').textContent = stats.played;
+            document.getElementById('gamesWon').textContent = stats.won;
+            document.getElementById('winRate').textContent = Math.round(stats.winRate) + '%';
+            document.getElementById('dailyProgress').textContent = `已完成 ${dailyChallenge.completed}/3 题`;
+
+            // 更新段位
+            const currentRank = getCurrentRank();
+            document.getElementById('rankBadge').textContent = `${currentRank.name}段位`;
+        }
+
+        // 获取当前段位
+        function getCurrentRank() {
+            for (let i = ranks.length - 1; i >= 0; i--) {
+                if (stats.won >= ranks[i].minWins) {
+                    return ranks[i];
+                }
+            }
+            return ranks[0];
+        }
+
+        // 显示胜利
+        function showWin(attemptCount) {
+            const modal = document.getElementById('winModal');
+            const text = document.getElementById('winText');
+            text.textContent = `你用了${attemptCount}次猜中答案！\n答案：${targetNumber}`;
+            modal.style.display = 'flex';
+        }
+
+        // 显示失败
+        function showLose() {
+            const modal = document.getElementById('loseModal');
+            const text = document.getElementById('loseText');
+            text.textContent = `10 次机会用完了\n答案是：${targetNumber}`;
+            modal.style.display = 'flex';
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            resetGame();
+        }
+
+        // 重置游戏
+        function resetGame() {
+            targetNumber = generateTargetNumber();
+            attempts = 0;
+            gameHistory = [];
+            document.getElementById('history').innerHTML = '';
+            document.getElementById('numberInput').value = '';
+            document.getElementById('hintText').textContent = '输入 4 位数字开始猜';
+            updateUI();
+            console.log('答案（调试用）:', targetNumber);
+        }
+
+        // 显示教程
+        function showTutorial() {
+            document.getElementById('tutorial').style.display = 'block';
+            document.getElementById('tutorial').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 显示段位
+        function showRank() {
+            alert(`当前段位：${getCurrentRank().name}\n获胜次数：${stats.won}\n下一段位需要：${ranks[ranks.indexOf(getCurrentRank()) + 1]?.minWins || '已满级'}胜`);
+        }
+
+        // 分享战绩
+        function shareResult() {
+            const text = `我在《猜数字大师》达到了${getCurrentRank().name}段位！胜率${Math.round(stats.winRate)}%！快来挑战我吧！`;
+            if (navigator.share) {
+                navigator.share({
+                    title: '猜数字大师',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                alert('复制以下链接分享给朋友：\n' + window.location.href);
+            }
+        }
+
+        // 创建彩带效果
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.background = ['#FFD700', '#FF6B6B', '#667eea', '#764ba2'][Math.floor(Math.random() * 4)];
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        // 保存统计
+        function saveStats() {
+            stats.winRate = stats.played > 0 ? (stats.won / stats.played) * 100 : 0;
+            localStorage.setItem('guessNumberStats', JSON.stringify(stats));
+        }
+
+        // 加载统计
+        function loadStats() {
+            const saved = localStorage.getItem('guessNumberStats');
+            if (saved) {
+                stats = JSON.parse(saved);
+            }
+        }
+
+        // 保存每日挑战
+        function saveDailyChallenge() {
+            localStorage.setItem('dailyChallenge', JSON.stringify(dailyChallenge));
+        }
+
+        // 加载每日挑战
+        function loadDailyChallenge() {
+            const saved = localStorage.getItem('dailyChallenge');
+            if (saved) {
+                dailyChallenge = JSON.parse(saved);
+                if (dailyChallenge.date !== new Date().toDateString()) {
+                    dailyChallenge = { completed: 0, date: new Date().toDateString() };
+                }
+            }
+        }
+
+        // 事件监听
+        document.getElementById('submitBtn').addEventListener('click', submitGuess);
+        document.getElementById('numberInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') submitGuess();
+        });
+
+        // 只允许输入数字
+        document.getElementById('numberInput').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+
+        // 初始化游戏
+        init();
+    </script>
+</body>
+</html>
