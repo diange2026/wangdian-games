@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>抓抓抓 3D - 堆叠消除大作</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; overflow: hidden; padding: 20px; color: #fff; touch-action: manipulation; }
+        .header { text-align: center; margin-bottom: 15px; }
+        .title { font-size: 36px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 10px; }
+        .stats { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .stat-box { background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 12px; text-align: center; min-width: 90px; }
+        .stat-label { font-size: 12px; opacity: 0.9; }
+        .stat-value { font-size: 26px; font-weight: bold; }
+        .game-container { position: relative; max-width: 500px; margin: 0 auto; perspective: 1000px; }
+        .game-board { position: relative; width: 100%; height: 450px; background: rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; transform-style: preserve-3d; box-shadow: inset 0 0 50px rgba(0,0,0,0.2); }
+        .item { position: absolute; width: 65px; height: 65px; background: linear-gradient(145deg, #fff, #e6e6e6); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer; transition: all 0.25s; box-shadow: 0 6px 20px rgba(0,0,0,0.25); border: 3px solid rgba(255,255,255,0.4); transform-style: preserve-3d; }
+        .item:hover { transform: scale(1.12) translateZ(25px); z-index: 100 !important; box-shadow: 0 10px 40px rgba(0,0,0,0.35); }
+        .item.selected { transform: scale(1.18) translateZ(35px); box-shadow: 0 0 40px rgba(255,255,0,0.9); border-color: #FFD700; z-index: 100 !important; }
+        .item.matched { animation: matchPop 0.6s forwards; }
+        @keyframes matchPop { 0% { transform: scale(1) rotate(0deg); opacity: 1; } 50% { transform: scale(1.4) rotate(180deg); opacity: 0.8; } 100% { transform: scale(0) rotate(360deg); opacity: 0; } }
+        .item.falling { animation: fallDrop 0.4s; }
+        @keyframes fallDrop { 0% { transform: translateY(-30px); opacity: 0.5; } 100% { transform: translateY(0); opacity: 1; } }
+        .slot-bar { display: flex; gap: 10px; justify-content: center; background: rgba(0,0,0,0.4); padding: 18px; border-radius: 18px; margin-top: 18px; min-height: 85px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .slot { width: 65px; height: 65px; background: rgba(255,255,255,0.12); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 38px; border: 3px dashed rgba(255,255,255,0.35); transition: all 0.3s; }
+        .slot.filled { border-style: solid; background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.6); }
+        .slot.match { animation: slotMatch 0.5s; background: rgba(255,255,0,0.35); border-color: #FFD700; }
+        @keyframes slotMatch { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        .controls { display: flex; gap: 10px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+        .btn { padding: 12px 28px; background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 15px rgba(0,0,0,0.25); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.35); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-prop { background: linear-gradient(45deg, #4CAF50, #45a049); }
+        .btn-shuffle { background: linear-gradient(45deg, #2196F3, #1976D2); }
+        .message { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.95); padding: 50px; border-radius: 25px; text-align: center; z-index: 1000; display: none; box-shadow: 0 10px 50px rgba(0,0,0,0.5); }
+        .message.show { display: block; animation: popIn 0.4s; }
+        @keyframes popIn { from { transform: translate(-50%, -50%) scale(0.6); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+        .message h2 { font-size: 42px; margin-bottom: 20px; }
+        .message p { font-size: 18px; opacity: 0.9; margin-bottom: 25px; line-height: 1.6; }
+        .audio-control { position: fixed; top: 20px; right: 20px; background: rgba(255,255,255,0.25); padding: 12px; border-radius: 50%; cursor: pointer; z-index: 100; font-size: 24px; transition: all 0.2s; }
+        .audio-control:hover { transform: scale(1.1); background: rgba(255,255,255,0.35); }
+        .prop-count { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; font-size: 14px; }
+        .layer-indicator { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="audio-control" onclick="toggleAudio()">🔊</div>
+    <div class="header">
+        <div class="title">🦢 抓抓抓 3D</div>
+        <div class="stats">
+            <div class="stat-box"><div class="stat-label">关卡</div><div class="stat-value" id="level">1</div></div>
+            <div class="stat-box"><div class="stat-label">已消除</div><div class="stat-value" id="matched">0</div></div>
+            <div class="stat-box"><div class="stat-label">剩余</div><div class="stat-value" id="remaining">0</div></div>
+            <div class="stat-box"><div class="stat-label">时间</div><div class="stat-value" id="timer">0s</div></div>
+        </div>
+    </div>
+    <div class="game-container">
+        <div class="game-board" id="gameBoard">
+            <div class="layer-indicator">层数：<span id="layerCount">0</span></div>
+            <div class="prop-count">道具：<span id="propCount">1</span></div>
+        </div>
+        <div class="slot-bar" id="slotBar">
+            <div class="slot"></div><div class="slot"></div><div class="slot"></div>
+            <div class="slot"></div><div class="slot"></div><div class="slot"></div>
+            <div class="slot"></div>
+        </div>
+    </div>
+    <div class="controls">
+        <button class="btn" onclick="startGame()">▶️ 开始</button>
+        <button class="btn btn-prop" onclick="useProp()">🎁 移出道具 (<span id="propNum">1</span>)</button>
+        <button class="btn btn-shuffle" onclick="shuffleBoard()">🔀 重排</button>
+    </div>
+    <div class="message" id="message">
+        <h2 id="msgTitle">🎉 恭喜！</h2>
+        <p id="msgText">关卡完成！</p>
+        <button class="btn" onclick="nextLevel()" style="margin-top:20px; padding: 15px 50px; font-size: 18px;">下一关</button>
+    </div>
+    <script>
+        const themes={
+            farm:['🦢','🐥','🥕','🥚','🌽','🍅','🥔','🧺','⛏️','🧶','🧴','🧼'],
+            vanity:['💄','🪞','💍','👛','🎀','🧴','💅','👠','👜','🕶️','🌂','🧤'],
+            kitchen:['🍳','🍽️','🥘','🍲','🥗','🍕','🌶️','🧂','🫖','🍶','🥢','🍴'],
+            jade:['🀄','💎','🏺','📿','🎐','🏮','🧧','🧿','🔮','⚱️','🗿','📯'],
+            market:['🥬','🍎','🍌','🥩','🐟','🧀','🍞','🧃','🍬','🍪','🥐','🥖'],
+            bbq:['🍖','🍗','🌭','🍕','🌮','🍢','🍡','🧆','🥙','🌯','🫔','🥓'],
+            tea:['☕','🫖','🧋','🍰','🧁','🍩','🍪','🧇','🥞','🥐','🥨','🥯']
+        };
+        let items=[], slots=[], level=1, matchedCount=0, timer=0, timerInterval=null, gameActive=false, moveHistory=[], audioEnabled=true, ctx=null, props=1;
+        function initAudio() { const AudioContext=window.AudioContext||window.webkitAudioContext; ctx=new AudioContext(); }
+        function playSound(freq,type='sine',duration=0.2) { if(!audioEnabled||!ctx) return; const osc=ctx.createOscillator(),gain=ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.frequency.value=freq; osc.type=type; gain.gain.setValueAtTime(0.3,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+duration); osc.start(); osc.stop(ctx.currentTime+duration); }
+        function toggleAudio() { audioEnabled=!audioEnabled; document.querySelector('.audio-control').textContent=audioEnabled?'🔊':'🔇'; }
+        function startGame() {
+            if(!ctx) initAudio();
+            items=[]; slots=Array(7).fill(null); moveHistory=[]; matchedCount=0; timer=0; props=1; gameActive=true;
+            document.getElementById('level').textContent=level;
+            document.getElementById('matched').textContent='0';
+            document.getElementById('remaining').textContent='0';
+            document.getElementById('timer').textContent='0s';
+            document.getElementById('propNum').textContent='1';
+            document.getElementById('propCount').textContent='1';
+            document.getElementById('message').classList.remove('show');
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval=setInterval(()=>{ timer++; document.getElementById('timer').textContent=timer+'s'; },1000);
+            const themeKeys=Object.keys(themes);
+            const theme=themes[themeKeys[(level-1)%themeKeys.length]];
+            generateItems(theme.slice(0,Math.min(8+level,12)), Math.min(5+Math.floor(level/2),12));
+            renderBoard();
+            renderSlots();
+        }
+        function generateItems(selected,numLayers) {
+            items=[];
+            selected.forEach(emoji=>{
+                const count=3+Math.floor(Math.random()*3);
+                for(let i=0;i<count;i++) items.push({emoji, id:Math.random().toString(36).substr(2,9), x:0, y:0, z:0, selected:false, matched:false });
+            });
+            items.sort(()=>Math.random()-0.5);
+            items.forEach((item,i)=>{
+                const col=i%7, row=Math.floor(i/7);
+                const layer=Math.floor(i/(7*6));
+                item.x=col*70+25+Math.random()*25-(layer*5);
+                item.y=row*70+25+Math.random()*25-(layer*5);
+                item.z=layer;
+            });
+            document.getElementById('layerCount').textContent=Math.max(...items.map(i=>i.z))+1;
+        }
+        function renderBoard() {
+            const board=document.getElementById('gameBoard');
+            board.innerHTML='<div class="layer-indicator">层数：<span id="layerCount">'+(Math.max(...items.map(i=>i.z))+1)+'</span><div class="prop-count">道具：<span id="propCount">'+props+'</span></div>';
+            items.forEach(item=>{
+                if(item.matched) return;
+                const el=document.createElement('div');
+                el.className='item'+(item.selected?' selected':'')+(item.falling?' falling':'');
+                el.textContent=item.emoji;
+                el.style.left=item.x+'px';
+                el.style.top=item.y+'px';
+                el.style.zIndex=item.z;
+                el.onclick=()=>selectItem(item);
+                board.appendChild(el);
+                item.el=el;
+            });
+            document.getElementById('remaining').textContent=items.filter(i=>!i.matched).length;
+        }
+        function renderSlots() {
+            const bar=document.getElementById('slotBar');
+            bar.innerHTML='';
+            for(let i=0;i<7;i++) {
+                const slot=document.createElement('div');
+                slot.className='slot'+(slots[i]?' filled':'');
+                slot.textContent=slots[i]?slots[i].emoji:'';
+                if(slots[i]&&i>1&&slots[i-1]&&slots[i-2]&&slots[i].emoji===slots[i-1].emoji&&slots[i-1].emoji===slots[i-2].emoji) {
+                    slot.classList.add('match');
+                }
+                bar.appendChild(slot);
+            }
+        }
+        function selectItem(item) {
+            if(!gameActive||item.selected||item.matched) return;
+            const emptyIndex=slots.findIndex(s=>s===null);
+            if(emptyIndex===-1) return;
+            moveHistory.push({type:'select', item, slotIndex:emptyIndex, prevSlots:[...slots]});
+            item.selected=true;
+            slots[emptyIndex]=item;
+            playSound(523,'sine',0.15);
+            renderBoard();
+            renderSlots();
+            checkMatch();
+        }
+        function checkMatch() {
+            for(let i=2;i<slots.length;i++) {
+                if(slots[i]&&slots[i-1]&&slots[i-2]&&slots[i].emoji===slots[i-1].emoji&&slots[i-1].emoji===slots[i-2].emoji) {
+                    setTimeout(()=>{
+                        slots[i].matched=true; slots[i-1].matched=true; slots[i-2].matched=true;
+                        slots[i].el.classList.add('matched'); slots[i-1].el.classList.add('matched'); slots[i-2].el.classList.add('matched');
+                        matchedCount+=3;
+                        document.getElementById('matched').textContent=matchedCount;
+                        playSound(659,'square',0.3);
+                        slots[i]=null; slots[i-1]=null; slots[i-2]=null;
+                        applyGravity();
+                        renderSlots();
+                        renderBoard();
+                        checkWin();
+                    },400);
+                    return;
+                }
+            }
+        }
+        function applyGravity() {
+            items.filter(i=>!i.matched&&!i.selected).forEach(item=>{
+                const above=items.filter(a=>!a.matched&&!a.selected&&Math.abs(a.x-item.x)<30&&a.z>item.z);
+                if(above.length>0) {
+                    item.y+=20;
+                    item.falling=true;
+                    setTimeout(()=>item.falling=false,400);
+                }
+            });
+        }
+        function checkWin() {
+            const remaining=items.filter(i=>!i.matched).length;
+            if(remaining===0) {
+                gameActive=false; clearInterval(timerInterval);
+                playSound(880,'triangle',0.5);
+                document.getElementById('msgTitle').textContent='🎉 恭喜！';
+                document.getElementById('msgText').textContent=`关卡${level}完成！用时${timer}秒 | 消除${matchedCount}个`;
+                document.getElementById('message').classList.add('show');
+            } else if(slots.filter(s=>s).length===7) {
+                gameActive=false; clearInterval(timerInterval);
+                document.getElementById('msgTitle').textContent='😢 游戏结束';
+                document.getElementById('msgText').textContent='槽位已满！使用"移出"道具或重新开始';
+                document.getElementById('message').classList.add('show');
+            }
+        }
+        function useProp() {
+            if(!gameActive||props<=0) return;
+            const filled=slots.map((s,i)=>s).filter(s=>s);
+            if(filled.length<3) return;
+            const lastThree=filled.slice(-3);
+            lastThree.forEach(item=>{
+                item.selected=false;
+                const idx=slots.indexOf(item);
+                slots[idx]=null;
+            });
+            props--;
+            document.getElementById('propNum').textContent=props;
+            document.getElementById('propCount').textContent=props;
+            playSound(440,'sine',0.2);
+            renderBoard();
+            renderSlots();
+        }
+        function shuffleBoard() {
+            if(!gameActive) return;
+            items.filter(i=>!i.matched&&!i.selected).forEach(item=>{
+                item.x=Math.random()*380+25;
+                item.y=Math.random()*350+25;
+                item.falling=true;
+                setTimeout(()=>item.falling=false,400);
+            });
+            playSound(523,'sine',0.2);
+            renderBoard();
+            moveHistory.push({type:'shuffle'});
+        }
+        function nextLevel() { level++; startGame(); }
+        startGame();
+    </script>
+</body>
+</html>

@@ -3,22 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>典哥的游戏乐园 - 抓大鹅 3D</title>
+    <title>抓抓抓 3D - 典哥的游戏乐园</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #fff; }
-        .container { max-width: 800px; margin: 0 auto; }
+        .container { max-width: 900px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 40px; padding: 30px 20px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
         .title { font-size: 48px; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
         .subtitle { font-size: 18px; opacity: 0.9; }
         .featured-game { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 40px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
         .game-icon { font-size: 120px; margin-bottom: 20px; display: block; }
         .game-name { font-size: 36px; font-weight: bold; margin-bottom: 15px; }
-        .game-desc { font-size: 16px; opacity: 0.9; margin-bottom: 30px; line-height: 1.8; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .game-desc { font-size: 16px; opacity: 0.9; margin-bottom: 30px; line-height: 1.8; max-width: 700px; margin-left: auto; margin-right: auto; }
         .game-features { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
-        .feature-tag { background: rgba(255,255,255,0.25); padding: 8px 20px; border-radius: 20px; font-size: 14px; }
-        .play-btn { display: inline-block; padding: 18px 60px; background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; border-radius: 15px; font-size: 20px; font-weight: bold; transition: all 0.3s; box-shadow: 0 6px 20px rgba(255,107,107,0.4); }
-        .play-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(255,107,107,0.6); }
+        .feature-tag { background: rgba(255,255,255,0.25); padding: 10px 22px; border-radius: 20px; font-size: 14px; font-weight: 500; }
+        .play-btn { display: inline-block; padding: 20px 70px; background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; border-radius: 18px; font-size: 22px; font-weight: bold; transition: all 0.3s; box-shadow: 0 8px 25px rgba(255,107,107,0.5); }
+        .play-btn:hover { transform: translateY(-6px); box-shadow: 0 12px 35px rgba(255,107,107,0.7); }
+        .game-info { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 30px; margin-bottom: 30px; }
+        .game-info h3 { font-size: 24px; margin-bottom: 20px; text-align: center; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .info-item { background: rgba(255,255,255,0.15); padding: 20px; border-radius: 15px; }
+        .info-item h4 { font-size: 18px; margin-bottom: 12px; color: #FFD700; }
+        .info-item p { font-size: 14px; opacity: 0.9; line-height: 1.6; }
         .footer { text-align: center; padding: 30px 20px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; margin-top: 40px; }
         .footer-text { font-size: 14px; opacity: 0.9; line-height: 1.8; }
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
@@ -30,34 +36,64 @@
     <div class="container">
         <div class="header">
             <div class="title">🎮 典哥的游戏乐园</div>
-            <div class="subtitle">精品游戏 · 独家首发 · 免费畅玩</div>
+            <div class="subtitle">精品 3D 消除游戏 · 独家首发</div>
         </div>
         <div class="featured-game">
             <div class="game-icon">🦢</div>
-            <div class="game-name">抓大鹅 3D</div>
+            <div class="game-name">抓抓抓 3D</div>
             <div class="game-desc">
                 超火 3D 堆叠消除游戏！<br>
-                在层层堆叠的动物中找到相同的 3 个，放入槽位即可消除。<br>
-                3D 视觉效果 + 魔性音效，越玩越上头！
+                在层层堆叠的物品中找到三个相同的，放入底部槽位即可消除。<br>
+                <strong>7 大主题</strong>（农场/梳妆台/厨房/玉石/菜市场/烧烤摊/下午茶），<strong>14 个关卡</strong>，越玩越上头！<br>
+                3D 视觉效果 + 物理掉落 + 魔性音效，解压神器！
             </div>
             <div class="game-features">
                 <span class="feature-tag">🦢 3D 堆叠</span>
                 <span class="feature-tag">🎵 音效</span>
                 <span class="feature-tag">🧠 益智</span>
                 <span class="feature-tag">📱 手机适配</span>
-                <span class="feature-tag">🎮 免费</span>
+                <span class="feature-tag">🎁 道具系统</span>
+                <span class="feature-tag">🏆 14 关卡</span>
             </div>
-            <a href="catch-goose-3d.html" class="play-btn">🎮 开始游戏</a>
+            <a href="zhua-zhua-zhua-3d.html" class="play-btn">🎮 开始游戏</a>
+        </div>
+        <div class="game-info">
+            <h3>📋 游戏特色</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h4>🎯 核心玩法</h4>
+                    <p>点击 3D 堆叠中的物品，放入底部槽位。集齐 3 个相同物品即消除。消除所有物品即可通关！</p>
+                </div>
+                <div class="info-item">
+                    <h4>🎨 7 大主题</h4>
+                    <p>农场、梳妆台、厨房、玉石、菜市场、烧烤摊、下午茶，每个主题 2 关，共 14 关！</p>
+                </div>
+                <div class="info-item">
+                    <h4>🎁 道具系统</h4>
+                    <p>移出道具：将槽位中 3 个物品移出暂存。每局免费 1 次，后续可收集获得！</p>
+                </div>
+                <div class="info-item">
+                    <h4>🔀 重排功能</h4>
+                    <p>陷入死局？使用重排功能重新排列所有物品，寻找新的机会！</p>
+                </div>
+                <div class="info-item">
+                    <h4>📊 难度曲线</h4>
+                    <p>第 1 关：3-5 层堆叠，6-8 种物品，时间宽松<br>第 2 关：8-12 层堆叠，12 种物品，时间紧张</p>
+                </div>
+                <div class="info-item">
+                    <h4>🔊 音效系统</h4>
+                    <p>点击音效、消除音效、胜利/失败音效，全部采用 Web Audio 实时生成！可开关控制。</p>
+                </div>
+            </div>
         </div>
         <div class="footer">
             <div class="footer-text">
                 <strong>🎉 欢迎来到典哥的游戏乐园！</strong><br>
-                抓大鹅 3D 完全免费，无需下载，即点即玩<br>
-                3D 视觉效果 + 魔性音效，解压神器！<br>
+                抓抓抓 3D 完全免费，无需下载，即点即玩<br>
+                3D 视觉效果 + 物理掉落 + 魔性音效，解压神器！<br>
                 <br>
                 <strong>💡 游戏提示：</strong><br>
-                支持手机和电脑访问<br>
-                点击右上角 🔊 可开关音效
+                支持手机和电脑访问 | 右上角 🔊 可开关音效 | 每关赠送 1 个移出道具
             </div>
             <div class="social-links">
                 <a href="https://github.com/diange2026/wangdian-games" class="social-link" target="_blank">📦 GitHub 仓库</a>
@@ -65,9 +101,5 @@
             </div>
         </div>
     </div>
-    <script>
-        // 自动跳转到游戏（可选）
-        // window.location.href = 'catch-goose-3d.html';
-    </script>
 </body>
 </html>
