@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>节奏方块 - 音乐游戏</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; padding: 20px; color: #fff;
+        }
+        .title { font-size: 32px; margin-bottom: 20px; }
+        .stats { display: flex; gap: 20px; margin-bottom: 20px; }
+        .stat-box { background: rgba(255,255,255,0.2); padding: 10px 25px; border-radius: 10px; text-align: center; }
+        .stat-label { font-size: 12px; opacity: 0.9; }
+        .stat-value { font-size: 24px; font-weight: bold; }
+        #gameCanvas { background: rgba(0,0,0,0.5); border-radius: 15px; }
+        .controls { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .btn {
+            padding: 12px 30px; background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white; border: none; border-radius: 10px; font-size: 16px;
+            font-weight: bold; cursor: pointer;
+        }
+        .lane-hints { display: flex; gap: 10px; margin-top: 10px; }
+        .lane-hint { width: 60px; text-align: center; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="title">🎵 节奏方块</div>
+    <div class="stats">
+        <div class="stat-box"><div class="stat-label">分数</div><div class="stat-value" id="score">0</div></div>
+        <div class="stat-box"><div class="stat-label">连击</div><div class="stat-value" id="combo">0</div></div>
+        <div class="stat-box"><div class="stat-label">准确率</div><div class="stat-value" id="accuracy">100%</div></div>
+    </div>
+    <canvas id="gameCanvas" width="300" height="500"></canvas>
+    <div class="lane-hints">
+        <div class="lane-hint">D</div>
+        <div class="lane-hint">F</div>
+        <div class="lane-hint">J</div>
+        <div class="lane-hint">K</div>
+    </div>
+    <div class="controls">
+        <button class="btn" onclick="startGame()">▶️ 开始</button>
+        <button class="btn" onclick="togglePause()">⏸️ 暂停</button>
+    </div>
+    <script>
+        const canvas=document.getElementById('gameCanvas'), ctx=canvas.getContext('2d');
+        const LANES=4, LANE_WIDTH=75, HIT_LINE=450;
+        let notes=[], score=0, combo=0, total=0, hits=0, gameRunning=false, isPaused=false, speed=3, spawnRate=1000, lastSpawn=0;
+        const KEYS=['d','f','j','k'], COLORS=['#f44336','#4CAF50','#2196F3','#FFC107'];
+        function startGame() {
+            notes=[]; score=0; combo=0; total=0; hits=0; gameRunning=true; isPaused=false; speed=3;
+            document.getElementById('score').textContent='0';
+            document.getElementById('combo').textContent='0';
+            document.getElementById('accuracy').textContent='100%';
+            lastSpawn=Date.now();
+            gameLoop();
+        }
+        function spawnNote() {
+            const lane=Math.floor(Math.random()*LANES);
+            notes.push({lane, y:-50, hit:false, missed:false});
+        }
+        function gameLoop() {
+            if(!gameRunning||isPaused) return;
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle='rgba(255,255,255,0.1)';
+            for(let i=0;i<LANES;i++) ctx.fillRect(i*LANE_WIDTH,0,1,canvas.height);
+            ctx.strokeStyle='rgba(255,255,255,0.3)';
+            ctx.beginPath(); ctx.moveTo(0,HIT_LINE); ctx.lineTo(canvas.width,HIT_LINE); ctx.stroke();
+            if(Date.now()-lastSpawn>spawnRate) { spawnNote(); lastSpawn=Date.now(); spawnRate=Math.max(400,spawnRate-10); speed+=0.05; }
+            notes.forEach((note,i)=>{
+                note.y+=speed;
+                ctx.fillStyle=COLORS[note.lane];
+                ctx.fillRect(note.lane*LANE_WIDTH+10,note.y-25,LANE_WIDTH-20,50);
+                if(note.y>canvas.height&&!note.hit&&!note.missed) {
+                    note.missed=true; combo=0; total++;
+                    document.getElementById('combo').textContent=combo;
+                }
+            });
+            notes=notes.filter(n=>n.y<canvas.height+50);
+            const accuracy=total>0?Math.round(hits/total*100):100;
+            document.getElementById('accuracy').textContent=accuracy+'%';
+            requestAnimationFrame(gameLoop);
+        }
+        function checkHit(lane) {
+            if(!gameRunning||isPaused) return;
+            const hitNote=notes.find(n=>n.lane===lane&&!n.hit&&!n.missed&&Math.abs(n.y-HIT_LINE)<50);
+            if(hitNote) {
+                hitNote.hit=true; score+=10+combo; combo++; hits++; total++;
+                document.getElementById('score').textContent=score;
+                document.getElementById('combo').textContent=combo;
+            } else { combo=0; total++; document.getElementById('combo').textContent=0; }
+        }
+        function togglePause() { isPaused=!isPaused; if(!isPaused) gameLoop(); }
+        document.addEventListener('keydown',e=>{
+            if(KEYS.includes(e.key)) checkHit(KEYS.indexOf(e.key));
+        });
+        canvas.addEventListener('click',e=>{
+            const rect=canvas.getBoundingClientRect();
+            const lane=Math.floor((e.clientX-rect.left)/LANE_WIDTH);
+            if(lane>=0&&lane<LANES) checkHit(lane);
+        });
+    </script>
+</body>
+</html>

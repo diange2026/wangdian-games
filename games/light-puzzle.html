@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光影谜题 - 光线反射</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; color: #fff; }
+        .title { font-size: 32px; margin-bottom: 20px; }
+        .stats { display: flex; gap: 20px; margin-bottom: 20px; }
+        .stat-box { background: rgba(255,255,255,0.2); padding: 10px 25px; border-radius: 10px; text-align: center; }
+        .stat-label { font-size: 12px; opacity: 0.9; }
+        .stat-value { font-size: 24px; font-weight: bold; }
+        #gameCanvas { background: #1a1a2e; border-radius: 15px; }
+        .controls { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .btn { padding: 12px 30px; background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .instructions { margin-top: 20px; font-size: 14px; opacity: 0.9; text-align: center; max-width: 500px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="title">💡 光影谜题</div>
+    <div class="stats">
+        <div class="stat-box"><div class="stat-label">关卡</div><div class="stat-value" id="level">1</div></div>
+        <div class="stat-box"><div class="stat-label">移动数</div><div class="stat-value" id="moves">0</div></div>
+        <div class="stat-box"><div class="stat-label">时间</div><div class="stat-value" id="timer">0s</div></div>
+    </div>
+    <canvas id="gameCanvas" width="500" height="500"></canvas>
+    <div class="controls">
+        <button class="btn" onclick="rotateMirror(0)">🔄 旋转镜 1</button>
+        <button class="btn" onclick="rotateMirror(1)">🔄 旋转镜 2</button>
+        <button class="btn" onclick="rotateMirror(2)">🔄 旋转镜 3</button>
+        <button class="btn" onclick="shootLaser()">🔦 发射光线</button>
+        <button class="btn" onclick="nextLevel()">⏭️ 下一关</button>
+    </div>
+    <div class="instructions"><strong>玩法说明：</strong><br>旋转镜子改变光线反射角度，让光线照射到绿色目标点！</div>
+    <script>
+        const canvas=document.getElementById('gameCanvas'), ctx=canvas.getContext('2d');
+        let level=1, moves=0, timer=0, timerInterval=null, laserPath=[], mirrors=[], target={x:400, y:400, r:20}, lightSource={x:50, y:250};
+        function initLevel() {
+            moves=0; timer=0; laserPath=[];
+            document.getElementById('moves').textContent='0';
+            document.getElementById('timer').textContent='0s';
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval=setInterval(()=>{ timer++; document.getElementById('timer').textContent=timer+'s'; },1000);
+            mirrors=[{x:150, y:150, angle:45, w:60}, {x:300, y:200, angle:45, w:60}, {x:250, y:350, angle:45, w:60}];
+            draw();
+        }
+        function rotateMirror(i) { if(i<mirrors.length) { mirrors[i].angle=(mirrors[i].angle+45)%180; moves++; document.getElementById('moves').textContent=moves; draw(); } }
+        function shootLaser() {
+            laserPath=[{x:lightSource.x, y:lightSource.y}];
+            let x=lightSource.x, y=lightSource.y, dx=1, dy=0;
+            for(let step=0; step<100; step++) {
+                x+=dx*5; y+=dy*5;
+                laserPath.push({x,y});
+                mirrors.forEach(m=>{
+                    const dist=Math.sqrt(Math.pow(x-m.x,2)+Math.pow(y-m.y,2));
+                    if(dist<40) {
+                        const rad=m.angle*Math.PI/180;
+                        const nx=Math.cos(rad), ny=Math.sin(rad);
+                        const dot=dx*nx+dy*ny;
+                        dx=dx-2*dot*nx; dy=dy-2*dot*ny;
+                    }
+                });
+                const distToTarget=Math.sqrt(Math.pow(x-target.x,2)+Math.pow(y-target.y,2));
+                if(distToTarget<target.r) { draw(); setTimeout(()=>{ alert('🎉 关卡完成！'); level++; document.getElementById('level').textContent=level; initLevel(); },100); return; }
+                if(x<0||x>500||y<0||y>500) break;
+            }
+            draw();
+        }
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.beginPath(); ctx.arc(lightSource.x,lightSource.y,15,0,Math.PI*2); ctx.fillStyle='#FFD700'; ctx.fill();
+            ctx.beginPath(); ctx.arc(target.x,target.y,target.r,0,Math.PI*2); ctx.fillStyle='#4CAF50'; ctx.fill();
+            mirrors.forEach(m=>{
+                ctx.save(); ctx.translate(m.x,m.y); ctx.rotate(m.angle*Math.PI/180);
+                ctx.fillStyle='#9C27B0'; ctx.fillRect(-m.w/2,-3,m.w,6);
+                ctx.restore();
+            });
+            if(laserPath.length>0) {
+                ctx.beginPath(); ctx.moveTo(laserPath[0].x,laserPath[0].y);
+                laserPath.forEach(p=>ctx.lineTo(p.x,p.y));
+                ctx.strokeStyle='#ff4444'; ctx.lineWidth=3; ctx.stroke();
+            }
+        }
+        function nextLevel() { level++; document.getElementById('level').textContent=level; initLevel(); }
+        initLevel();
+    </script>
+</body>
+</html>

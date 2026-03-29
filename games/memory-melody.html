@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记忆旋律 - 音乐记忆</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; color: #fff; }
+        .title { font-size: 32px; margin-bottom: 20px; }
+        .stats { display: flex; gap: 20px; margin-bottom: 20px; }
+        .stat-box { background: rgba(255,255,255,0.2); padding: 10px 25px; border-radius: 10px; text-align: center; }
+        .stat-label { font-size: 12px; opacity: 0.9; }
+        .stat-value { font-size: 24px; font-weight: bold; }
+        .pads { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; margin: 20px; }
+        .pad { width: 120px; height: 120px; border-radius: 20px; border: none; cursor: pointer; transition: all 0.2s; font-size: 40px; }
+        .pad:active, .pad.active { transform: scale(0.95); filter: brightness(1.3); }
+        .pad-0 { background: #f44336; } .pad-1 { background: #4CAF50; } .pad-2 { background: #2196F3; } .pad-3 { background: #FFC107; }
+        .controls { margin-top: 20px; }
+        .btn { padding: 15px 40px; background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; border: none; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; margin: 10px; }
+        .message { margin: 20px; padding: 20px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 20px; text-align: center; }
+        .instructions { margin-top: 20px; font-size: 14px; opacity: 0.9; text-align: center; max-width: 500px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="title">🎵 记忆旋律</div>
+    <div class="stats">
+        <div class="stat-box"><div class="stat-label">回合</div><div class="stat-value" id="round">0</div></div>
+        <div class="stat-box"><div class="stat-label">最佳</div><div class="stat-value" id="best">0</div></div>
+        <div class="stat-box"><div class="stat-label">状态</div><div class="stat-value" id="status">准备</div></div>
+    </div>
+    <div class="message" id="message">点击开始游戏</div>
+    <div class="pads">
+        <button class="pad pad-0" data-id="0">🔴</button>
+        <button class="pad pad-1" data-id="1">🟢</button>
+        <button class="pad pad-2" data-id="2">🔵</button>
+        <button class="pad pad-3" data-id="3">🟡</button>
+    </div>
+    <div class="controls">
+        <button class="btn" onclick="startGame()">▶️ 开始</button>
+    </div>
+    <div class="instructions"><strong>玩法说明：</strong><br>观看并重复灯光和声音序列<br>每回合序列会增加一个音符<br>看你能记住多长的序列！</div>
+    <script>
+        let sequence=[], playerSequence=[], round=0, best=0, gameActive=false, canInput=false;
+        const frequencies=[261.63, 329.63, 392.00, 523.25];
+        const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+        function playTone(freq, duration) {
+            const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.value=freq; gain.gain.value=0.3;
+            osc.start(); osc.stop(audioCtx.currentTime+duration/1000);
+        }
+        function flashPad(id) {
+            const pad=document.querySelector(`.pad-${id}`);
+            pad.classList.add('active');
+            playTone(frequencies[id], 300);
+            setTimeout(()=>pad.classList.remove('active'), 300);
+        }
+        function startGame() {
+            sequence=[]; playerSequence=[]; round=0; best=parseInt(localStorage.getItem('simon-best')||0);
+            document.getElementById('best').textContent=best;
+            document.getElementById('round').textContent='0';
+            document.getElementById('status').textContent='准备';
+            gameActive=true;
+            nextRound();
+        }
+        function nextRound() {
+            round++; playerSequence=[];
+            document.getElementById('round').textContent=round;
+            document.getElementById('status').textContent='观看';
+            document.getElementById('message').textContent='记住序列...';
+            sequence.push(Math.floor(Math.random()*4));
+            setTimeout(playSequence, 1000);
+        }
+        function playSequence() {
+            canInput=false;
+            let i=0;
+            const interval=setInterval(()=>{
+                flashPad(sequence[i]);
+                i++;
+                if(i>=sequence.length) {
+                    clearInterval(interval);
+                    setTimeout(()=>{ canInput=true; document.getElementById('status').textContent='输入'; document.getElementById('message').textContent='轮到你了！'; },500);
+                }
+            }, 600);
+        }
+        function handleInput(id) {
+            if(!canInput||!gameActive) return;
+            flashPad(id);
+            playerSequence.push(id);
+            const index=playerSequence.length-1;
+            if(playerSequence[index]!==sequence[index]) {
+                gameActive=false; canInput=false;
+                document.getElementById('status').textContent='结束';
+                document.getElementById('message').textContent=`游戏结束！回合：${round}`;
+                if(round-1>best) { best=round-1; localStorage.setItem('simon-best',best); document.getElementById('best').textContent=best; }
+                return;
+            }
+            if(playerSequence.length===sequence.length) {
+                canInput=false;
+                document.getElementById('status').textContent='正确';
+                document.getElementById('message').textContent='很好！下一回合...';
+                setTimeout(nextRound, 1500);
+            }
+        }
+        document.querySelectorAll('.pad').forEach(pad=>{
+            pad.addEventListener('click',()=>handleInput(parseInt(pad.dataset.id)));
+        });
+    </script>
+</body>
+</html>

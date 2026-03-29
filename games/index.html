@@ -2,135 +2,71 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>典哥的游戏乐园</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>典哥的游戏乐园 - 20 款创新游戏</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; padding: 20px; color: #fff;
-        }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .header {
-            text-align: center; margin-bottom: 40px; padding: 30px 20px;
-            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-            border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #fff; }
+        .container { max-width: 1600px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; padding: 30px 20px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
         .title { font-size: 48px; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
         .subtitle { font-size: 18px; opacity: 0.9; }
-        .games-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px; margin-bottom: 40px;
-        }
-        .game-card {
-            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-            border-radius: 20px; padding: 25px; transition: all 0.3s; cursor: pointer;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2); border: 2px solid transparent;
-        }
-        .game-card:hover {
-            transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            border-color: rgba(255,255,255,0.3);
-        }
-        .game-icon { font-size: 64px; text-align: center; margin-bottom: 20px; }
-        .game-name { font-size: 24px; font-weight: bold; margin-bottom: 10px; text-align: center; }
-        .game-desc { font-size: 14px; opacity: 0.9; text-align: center; margin-bottom: 20px; line-height: 1.6; }
-        .game-tags { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-        .tag { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 15px; font-size: 12px; }
-        .play-btn {
-            width: 100%; padding: 12px; background: linear-gradient(45deg, #FF6B6B, #FF8E53);
-            color: white; border: none; border-radius: 10px; font-size: 16px;
-            font-weight: bold; cursor: pointer; transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(255,107,107,0.4);
-        }
+        .section-title { font-size: 28px; margin: 40px 0 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 15px; text-align: center; }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .game-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px; transition: all 0.3s; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,0.2); border: 2px solid transparent; }
+        .game-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.3); }
+        .game-icon { font-size: 56px; text-align: center; margin-bottom: 15px; }
+        .game-name { font-size: 20px; font-weight: bold; margin-bottom: 10px; text-align: center; }
+        .game-desc { font-size: 13px; opacity: 0.9; text-align: center; margin-bottom: 15px; line-height: 1.5; }
+        .game-tags { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; }
+        .tag { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-size: 11px; }
+        .play-btn { width: 100%; padding: 10px; background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(255,107,107,0.4); }
         .play-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,107,0.6); }
-        .footer {
-            text-align: center; padding: 30px 20px; background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px); border-radius: 20px; margin-top: 40px;
-        }
+        .footer { text-align: center; padding: 30px 20px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; margin-top: 40px; }
         .footer-text { font-size: 14px; opacity: 0.9; line-height: 1.8; }
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
-        .social-link {
-            background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 10px;
-            text-decoration: none; color: white; font-size: 14px; transition: all 0.3s;
-        }
+        .social-link { background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white; font-size: 14px; transition: all 0.3s; }
         .social-link:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
-        @media (max-width: 768px) { .title { font-size: 36px; } .games-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .title { font-size: 32px; } .games-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="title">🎮 典哥的游戏乐园</div>
-            <div class="subtitle">10 款热门游戏 · 免费畅玩 · 随时随地</div>
+            <div class="subtitle">20 款创新游戏 · 免费畅玩 · 随时随地</div>
         </div>
+        <div class="section-title">🔥 10 款热门经典游戏</div>
         <div class="games-grid">
-            <div class="game-card" onclick="openGame('memory-game.html')">
-                <div class="game-icon">🧠</div><div class="game-name">记忆翻牌</div>
-                <div class="game-desc">挑战记忆力！翻牌配对相同图案</div>
-                <div class="game-tags"><span class="tag">🎴 配对</span><span class="tag">⏱️ 计时</span></div>
-                <button class="play-btn">🎮 开始游戏</button>
-            </div>
-            <div class="game-card" onclick="openGame('2048-game.html')">
-                <div class="game-icon">🔢</div><div class="game-name">2048</div>
-                <div class="game-desc">超火数字合并！挑战合成 2048</div>
-                <div class="game-tags"><span class="tag">🧮 数学</span><span class="tag">🎲 策略</span></div>
-                <button class="play-btn">🎮 开始游戏</button>
-            </div>
-            <div class="game-card" onclick="openGame('snake-game.html')">
-                <div class="game-icon">🐍</div><div class="game-name">贪吃蛇</div>
-                <div class="game-desc">经典街机！吃食物变长</div>
-                <div class="game-tags"><span class="tag">🕹️ 街机</span><span class="tag">🎮 经典</span></div>
-                <button class="play-btn">🎮 开始游戏</button>
-            </div>
-            <div class="game-card" onclick="openGame('minesweeper.html')">
-                <div class="game-icon">💣</div><div class="game-name">扫雷</div>
-                <div class="game-desc">经典益智！找出所有地雷</div>
-                <div class="game-tags"><span class="tag">🧠 逻辑</span><span class="tag">💣 排雷</span></div>
-                <button class="play-btn">🎮 开始游戏</button>
-            </div>
-            <div class="game-card" onclick="openGame('tetris.html')">
-                <div class="game-icon">🧱</div><div class="game-name">俄罗斯方块</div>
-                <div class="game-desc">经典下落！消除行数得分</div>
-                <div class="game-tags"><span class="tag">🎮 经典</span><span class="tag">📐 空间</span></div>
-                <button class="play-btn">🎮 开始游戏</button>
-            </div>
-            <div class="game-card" onclick="openGame('tictactoe.html')">
-                <div class="game-icon">⭕</div><div class="game-name">井字棋</div>
-                <div class="game-desc">双人对战！三子连线获胜</div>
-                <div class="game-tags"><span class="tag">🎯 对战</span><span class="tag">🧠 策略</span></div>
-                <button class="play-btn">🎮 开始游戏</button>
-            </div>
-            <div class="game-card" onclick="openGame('breakout.html')">
-                <div class="game-icon">🧱</div><div class="game-name">打砖块</div>
-                <div class="game-desc">街机经典！弹球打砖块</div>
-                <div class="game-tags"><span class="tag">🕹️ 街机</span><span class="tag">⚡ 反应</span></div>
-                <button class="play-btn">🎮 开始游戏</button>
-            </div>
-            <div class="game-card" onclick="openGame('puzzle.html')">
-                <div class="game-icon">🧩</div><div class="game-name">数字华容道</div>
-                <div class="game-desc">滑动拼图！还原数字顺序</div>
-                <div class="game-tags"><span class="tag">🧠 逻辑</span><span class="tag">🔢 排序</span></div>
-                <button class="play-btn">🎮 开始游戏</button>
-            </div>
-            <div class="game-card" onclick="openGame('gomoku.html')">
-                <div class="game-icon">⚫</div><div class="game-name">五子棋</div>
-                <div class="game-desc">双人对弈！五子连线获胜</div>
-                <div class="game-tags"><span class="tag">🎯 对战</span><span class="tag">🧠 策略</span></div>
-                <button class="play-btn">🎮 开始游戏</button>
-            </div>
-            <div class="game-card" onclick="openGame('reaction.html')">
-                <div class="game-icon">⚡</div><div class="game-name">反应测试</div>
-                <div class="game-desc">手速挑战！测试你的反应</div>
-                <div class="game-tags"><span class="tag">⚡ 反应</span><span class="tag">🏆 挑战</span></div>
-                <button class="play-btn">🎮 开始游戏</button>
-            </div>
+            <div class="game-card" onclick="openGame('memory-game.html')"><div class="game-icon">🧠</div><div class="game-name">记忆翻牌</div><div class="game-desc">挑战记忆力！翻牌配对</div><div class="game-tags"><span class="tag">🎴 配对</span><span class="tag">⏱️ 计时</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('2048-game.html')"><div class="game-icon">🔢</div><div class="game-name">2048</div><div class="game-desc">数字合并！挑战 2048</div><div class="game-tags"><span class="tag">🧮 数学</span><span class="tag">🎲 策略</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('snake-game.html')"><div class="game-icon">🐍</div><div class="game-name">贪吃蛇</div><div class="game-desc">经典街机！吃食物变长</div><div class="game-tags"><span class="tag">🕹️ 街机</span><span class="tag">🎮 经典</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('minesweeper.html')"><div class="game-icon">💣</div><div class="game-name">扫雷</div><div class="game-desc">经典益智！找出地雷</div><div class="game-tags"><span class="tag">🧠 逻辑</span><span class="tag">💣 排雷</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('tetris.html')"><div class="game-icon">🧱</div><div class="game-name">俄罗斯方块</div><div class="game-desc">经典下落！消除得分</div><div class="game-tags"><span class="tag">🎮 经典</span><span class="tag">📐 空间</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('tictactoe.html')"><div class="game-icon">⭕</div><div class="game-name">井字棋</div><div class="game-desc">双人对战！三子连线</div><div class="game-tags"><span class="tag">🎯 对战</span><span class="tag">🧠 策略</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('breakout.html')"><div class="game-icon">🧱</div><div class="game-name">打砖块</div><div class="game-desc">街机经典！弹球打砖</div><div class="game-tags"><span class="tag">🕹️ 街机</span><span class="tag">⚡ 反应</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('puzzle.html')"><div class="game-icon">🧩</div><div class="game-name">数字华容道</div><div class="game-desc">滑动拼图！还原顺序</div><div class="game-tags"><span class="tag">🧠 逻辑</span><span class="tag">🔢 排序</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('gomoku.html')"><div class="game-icon">⚫</div><div class="game-name">五子棋</div><div class="game-desc">双人对弈！五子连线</div><div class="game-tags"><span class="tag">🎯 对战</span><span class="tag">🧠 策略</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('reaction.html')"><div class="game-icon">⚡</div><div class="game-name">反应测试</div><div class="game-desc">手速挑战！测试反应</div><div class="game-tags"><span class="tag">⚡ 反应</span><span class="tag">🏆 挑战</span></div><button class="play-btn">🎮 开始</button></div>
+        </div>
+        <div class="section-title">✨ 10 款创新独家游戏</div>
+        <div class="games-grid">
+            <div class="game-card" onclick="openGame('color-mixer.html')"><div class="game-icon">🎨</div><div class="game-name">颜色混合大师</div><div class="game-desc">调色匹配目标颜色</div><div class="game-tags"><span class="tag">🎨 创意</span><span class="tag">🌈 色彩</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('gravity-ball.html')"><div class="game-icon">🌌</div><div class="game-name">引力弹球</div><div class="game-desc">利用引力改变轨迹</div><div class="game-tags"><span class="tag">🔮 物理</span><span class="tag">🎯 精准</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('rhythm-blocks.html')"><div class="game-icon">🎵</div><div class="game-name">节奏方块</div><div class="game-desc">音乐节奏！按键击打</div><div class="game-tags"><span class="tag">🎵 音乐</span><span class="tag">⚡ 反应</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('word-chain.html')"><div class="game-icon">📝</div><div class="game-name">文字接龙</div><div class="game-desc">词语接龙！创意组词</div><div class="game-tags"><span class="tag">📚 语文</span><span class="tag">🧠 词汇</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('maze-runner.html')"><div class="game-icon">🌀</div><div class="game-name">迷宫生成器</div><div class="game-desc">动态迷宫！逃脱挑战</div><div class="game-tags"><span class="tag">🧭 探索</span><span class="tag">🎲 随机</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('balance-master.html')"><div class="game-icon">⚖️</div><div class="game-name">平衡大师</div><div class="game-desc">物理堆叠！保持平衡</div><div class="game-tags"><span class="tag">⚖️ 平衡</span><span class="tag">🎯 精准</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('color-rush.html')"><div class="game-icon">🌈</div><div class="game-name">色彩冲刺</div><div class="game-desc">颜色匹配！收集冲刺</div><div class="game-tags"><span class="tag">🌈 色彩</span><span class="tag">⚡ 速度</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('number-hunter.html')"><div class="game-icon">🔢</div><div class="game-name">数字猎人</div><div class="game-desc">数学运算！快速答题</div><div class="game-tags"><span class="tag">🧮 数学</span><span class="tag">⚡ 速算</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('light-puzzle.html')"><div class="game-icon">💡</div><div class="game-name">光影谜题</div><div class="game-desc">光线反射！解谜挑战</div><div class="game-tags"><span class="tag">💡 光学</span><span class="tag">🧠 逻辑</span></div><button class="play-btn">🎮 开始</button></div>
+            <div class="game-card" onclick="openGame('memory-melody.html')"><div class="game-icon">🎵</div><div class="game-name">记忆旋律</div><div class="game-desc">音乐记忆！重复序列</div><div class="game-tags"><span class="tag">🎵 音乐</span><span class="tag">🧠 记忆</span></div><button class="play-btn">🎮 开始</button></div>
         </div>
         <div class="footer">
             <div class="footer-text">
                 <strong>🎉 欢迎来到典哥的游戏乐园！</strong><br>
-                10 款热门游戏完全免费，无需下载，即点即玩<br>
-                适合所有年龄段，休闲益智，放松身心<br>
+                20 款游戏完全免费，无需下载，即点即玩<br>
+                10 款经典 + 10 款创新，总有一款你喜欢！<br>
                 <br>
                 <strong>💡 游戏提示：</strong><br>
                 所有游戏支持手机和电脑访问<br>
