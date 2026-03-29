@@ -212,6 +212,9 @@ case "${1:-report}" in
     verify)
         verify_backup
         ;;
+    upgrade)
+        upgrade_system
+        ;;
     report|*)
         generate_report
         ;;
