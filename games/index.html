@@ -3,183 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>典哥的游戏乐园 - 15 款创新游戏</title>
+    <title>典哥的游戏乐园 - 抓大鹅 3D</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #fff; }
-        .container { max-width: 1200px; margin: 0 auto; }
+        .container { max-width: 800px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 40px; padding: 30px 20px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
         .title { font-size: 48px; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
         .subtitle { font-size: 18px; opacity: 0.9; }
-        .games-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px; }
-        .game-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 30px 20px; transition: all 0.3s; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,0.2); border: 2px solid transparent; text-align: center; }
-        .game-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 15px 50px rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.15); }
-        .game-icon { font-size: 72px; margin-bottom: 20px; display: block; }
-        .game-name { font-size: 24px; font-weight: bold; margin-bottom: 12px; color: #fff; }
-        .game-desc { font-size: 14px; opacity: 0.85; margin-bottom: 20px; line-height: 1.6; min-height: 42px; }
-        .game-tags { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-        .tag { background: rgba(255,255,255,0.25); padding: 6px 14px; border-radius: 15px; font-size: 12px; font-weight: 500; }
-        .play-btn { width: 100%; padding: 14px; background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(255,107,107,0.4); }
-        .play-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,107,107,0.6); }
+        .featured-game { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 40px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .game-icon { font-size: 120px; margin-bottom: 20px; display: block; }
+        .game-name { font-size: 36px; font-weight: bold; margin-bottom: 15px; }
+        .game-desc { font-size: 16px; opacity: 0.9; margin-bottom: 30px; line-height: 1.8; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .game-features { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
+        .feature-tag { background: rgba(255,255,255,0.25); padding: 8px 20px; border-radius: 20px; font-size: 14px; }
+        .play-btn { display: inline-block; padding: 18px 60px; background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; border-radius: 15px; font-size: 20px; font-weight: bold; transition: all 0.3s; box-shadow: 0 6px 20px rgba(255,107,107,0.4); }
+        .play-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(255,107,107,0.6); }
         .footer { text-align: center; padding: 30px 20px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; margin-top: 40px; }
         .footer-text { font-size: 14px; opacity: 0.9; line-height: 1.8; }
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
         .social-link { background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white; font-size: 14px; transition: all 0.3s; }
         .social-link:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
-        @media (max-width: 992px) { .games-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 640px) { .games-grid { grid-template-columns: 1fr; } .title { font-size: 32px; } }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="title">🎮 典哥的游戏乐园</div>
-            <div class="subtitle">23 款游戏 · 3 款 3D 大作 + 5 款魔性 + 10 款创新 + 5 款经典</div>
+            <div class="subtitle">精品游戏 · 独家首发 · 免费畅玩</div>
         </div>
-        <div class="section-title" style="font-size:28px;margin:40px 0 20px;padding:15px;background:rgba(255,255,255,0.1);border-radius:15px;text-align:center;">🎮 3 款 3D 大作 (带音效)</div>
-        <div class="games-grid">
-            <div class="game-card" onclick="openGame('catch-goose-3d.html')">
-                <div class="game-icon">🦢</div>
-                <div class="game-name">抓大鹅 3D</div>
-                <div class="game-desc">3D 堆叠消除，找到并匹配相同动物</div>
-                <div class="game-tags"><span class="tag">🦢 消除</span><span class="tag">🎵 音效</span></div>
-                <button class="play-btn">🎮 开始</button>
+        <div class="featured-game">
+            <div class="game-icon">🦢</div>
+            <div class="game-name">抓大鹅 3D</div>
+            <div class="game-desc">
+                超火 3D 堆叠消除游戏！<br>
+                在层层堆叠的动物中找到相同的 3 个，放入槽位即可消除。<br>
+                3D 视觉效果 + 魔性音效，越玩越上头！
             </div>
-            <div class="game-card" onclick="openGame('fruit-match-3d.html')">
-                <div class="game-icon">🍎</div>
-                <div class="game-name">3D 水果连连看</div>
-                <div class="game-desc">3D 水果匹配，连线消除</div>
-                <div class="game-tags"><span class="tag">🍎 连连看</span><span class="tag">🎵 音效</span></div>
-                <button class="play-btn">🎮 开始</button>
+            <div class="game-features">
+                <span class="feature-tag">🦢 3D 堆叠</span>
+                <span class="feature-tag">🎵 音效</span>
+                <span class="feature-tag">🧠 益智</span>
+                <span class="feature-tag">📱 手机适配</span>
+                <span class="feature-tag">🎮 免费</span>
             </div>
-            <div class="game-card" onclick="openGame('pet-match-3d.html')">
-                <div class="game-icon">🐾</div>
-                <div class="game-name">3D 宠物消消乐</div>
-                <div class="game-desc">3D 宠物堆叠，收集消除</div>
-                <div class="game-tags"><span class="tag">🐾 宠物</span><span class="tag">🎵 音效</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-        </div>
-        <div class="section-title" style="font-size:28px;margin:40px 0 20px;padding:15px;background:rgba(255,255,255,0.1);border-radius:15px;text-align:center;">🤪 5 款魔性搞笑游戏</div>
-        <div class="games-grid">
-            <div class="game-card" onclick="openGame('slap-mosquito.html')">
-                <div class="game-icon">🦟</div>
-                <div class="game-name">拍蚊子</div>
-                <div class="game-desc">疯狂拍蚊子，啪啪啪超解压</div>
-                <div class="game-tags"><span class="tag">🦟 解压</span><span class="tag">👆 点击</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('crazy-click.html')">
-                <div class="game-icon">👆</div>
-                <div class="game-name">疯狂点点点</div>
-                <div class="game-desc">10 秒疯狂点击，测试单身手速</div>
-                <div class="game-tags"><span class="tag">👆 手速</span><span class="tag">🔥 挑战</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('fart-challenge.html')">
-                <div class="game-icon">💨</div>
-                <div class="game-name">放屁挑战</div>
-                <div class="game-desc">魔性放屁音效，越放越响</div>
-                <div class="game-tags"><span class="tag">💨 搞笑</span><span class="tag">🔊 音效</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('dont-step.html')">
-                <div class="game-icon">🎹</div>
-                <div class="game-name">别踩白块</div>
-                <div class="game-desc">只踩黑块！简单又上头</div>
-                <div class="game-tags"><span class="tag">🎹 节奏</span><span class="tag">⚡ 反应</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('pop-bubbles.html')">
-                <div class="game-icon">🫧</div>
-                <div class="game-name">捏泡泡纸</div>
-                <div class="game-desc">无限泡泡纸，捏捏捏超爽</div>
-                <div class="game-tags"><span class="tag">🫧 解压</span><span class="tag">😌 放松</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-        </div>
-        <div class="section-title" style="font-size:28px;margin:40px 0 20px;padding:15px;background:rgba(255,255,255,0.1);border-radius:15px;text-align:center;">🧠 10 款益智创新游戏</div>
-        <div class="games-grid">
-            <div class="game-card" onclick="openGame('color-mixer.html')">
-                <div class="game-icon">🎨</div>
-                <div class="game-name">颜色混合大师</div>
-                <div class="game-desc">RGB 调色匹配目标颜色</div>
-                <div class="game-tags"><span class="tag">🎨 创意</span><span class="tag">🌈 色彩</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('gravity-ball.html')">
-                <div class="game-icon">🌌</div>
-                <div class="game-name">引力弹球</div>
-                <div class="game-desc">利用引力改变轨迹</div>
-                <div class="game-tags"><span class="tag">🔮 物理</span><span class="tag">🎯 精准</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('rhythm-blocks.html')">
-                <div class="game-icon">🎵</div>
-                <div class="game-name">节奏方块</div>
-                <div class="game-desc">音乐节奏游戏</div>
-                <div class="game-tags"><span class="tag">🎵 音乐</span><span class="tag">⚡ 反应</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('word-chain.html')">
-                <div class="game-icon">📝</div>
-                <div class="game-name">文字接龙</div>
-                <div class="game-desc">中文词语接龙</div>
-                <div class="game-tags"><span class="tag">📚 语文</span><span class="tag">🧠 词汇</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('maze-runner.html')">
-                <div class="game-icon">🌀</div>
-                <div class="game-name">迷宫生成器</div>
-                <div class="game-desc">随机迷宫逃脱</div>
-                <div class="game-tags"><span class="tag">🧭 探索</span><span class="tag">🎲 随机</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('balance-master.html')">
-                <div class="game-icon">⚖️</div>
-                <div class="game-name">平衡大师</div>
-                <div class="game-desc">物理堆叠平衡</div>
-                <div class="game-tags"><span class="tag">⚖️ 平衡</span><span class="tag">🎯 精准</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('color-rush.html')">
-                <div class="game-icon">🌈</div>
-                <div class="game-name">色彩冲刺</div>
-                <div class="game-desc">颜色匹配收集</div>
-                <div class="game-tags"><span class="tag">🌈 色彩</span><span class="tag">⚡ 速度</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('number-hunter.html')">
-                <div class="game-icon">🔢</div>
-                <div class="game-name">数字猎人</div>
-                <div class="game-desc">数学速算挑战</div>
-                <div class="game-tags"><span class="tag">🧮 数学</span><span class="tag">⚡ 速算</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('light-puzzle.html')">
-                <div class="game-icon">💡</div>
-                <div class="game-name">光影谜题</div>
-                <div class="game-desc">光线反射解谜</div>
-                <div class="game-tags"><span class="tag">💡 光学</span><span class="tag">🧠 逻辑</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
-            <div class="game-card" onclick="openGame('memory-melody.html')">
-                <div class="game-icon">🎵</div>
-                <div class="game-name">记忆旋律</div>
-                <div class="game-desc">音乐记忆序列</div>
-                <div class="game-tags"><span class="tag">🎵 音乐</span><span class="tag">🧠 记忆</span></div>
-                <button class="play-btn">🎮 开始</button>
-            </div>
+            <a href="catch-goose-3d.html" class="play-btn">🎮 开始游戏</a>
         </div>
         <div class="footer">
             <div class="footer-text">
                 <strong>🎉 欢迎来到典哥的游戏乐园！</strong><br>
-                15 款创新游戏完全免费，无需下载，即点即玩<br>
-                独家首发玩法，市场上找不到的游戏体验！<br>
+                抓大鹅 3D 完全免费，无需下载，即点即玩<br>
+                3D 视觉效果 + 魔性音效，解压神器！<br>
                 <br>
                 <strong>💡 游戏提示：</strong><br>
-                所有游戏支持手机和电脑访问<br>
-                挑战最高分，和朋友分享乐趣！
+                支持手机和电脑访问<br>
+                点击右上角 🔊 可开关音效
             </div>
             <div class="social-links">
                 <a href="https://github.com/diange2026/wangdian-games" class="social-link" target="_blank">📦 GitHub 仓库</a>
@@ -188,13 +66,8 @@
         </div>
     </div>
     <script>
-        function openGame(gameFile) { window.location.href = gameFile; }
-        document.querySelectorAll('.game-card').forEach(card => {
-            card.addEventListener('click', function(e) {
-                this.style.transform = 'scale(0.98)';
-                setTimeout(() => { this.style.transform = ''; }, 150);
-            });
-        });
+        // 自动跳转到游戏（可选）
+        // window.location.href = 'catch-goose-3d.html';
     </script>
 </body>
 </html>
