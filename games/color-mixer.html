@@ -75,7 +75,7 @@
     <button class="btn" onclick="submitColor()">✅ 提交答案</button>
     <button class="btn" onclick="nextLevel()">⏭️ 下一关</button>
     <script>
-        let level=1, score=0, perfect=0, targetRGB={r:0, g:0, b:0};
+        let level=1, score=0, perfect=0, targetRGB={r:0, g:0, b:0}, hints=3;
         function randomColor() {
             return {
                 r: Math.floor(Math.random()*256),
@@ -92,11 +92,24 @@
         function initLevel() {
             targetRGB=randomColor();
             document.getElementById('targetColor').style.background=rgbToHex(targetRGB.r,targetRGB.g,targetRGB.b);
+            document.getElementById('targetColor').textContent=`目标颜色`;
             document.getElementById('redSlider').value=0;
             document.getElementById('greenSlider').value=0;
             document.getElementById('blueSlider').value=0;
             updateMixed();
             document.getElementById('message').classList.remove('show');
+            document.getElementById('hint').style.display='none';
+            hints=3;
+        }
+        function showHint() {
+            if(hints<=0) { document.getElementById('hint').textContent='💡 提示用完了！'; document.getElementById('hint').style.display='block'; return; }
+            hints--;
+            const tip=[];
+            if(Math.abs(targetRGB.r-parseInt(document.getElementById('redSlider').value))>50) tip.push(targetRGB.r>parseInt(document.getElementById('redSlider').value)?'🔴 调高红色':'🔴 调低红色');
+            if(Math.abs(targetRGB.g-parseInt(document.getElementById('greenSlider').value))>50) tip.push(targetRGB.g>parseInt(document.getElementById('greenSlider').value)?'🟢 调高绿色':'🟢 调低绿色');
+            if(Math.abs(targetRGB.b-parseInt(document.getElementById('blueSlider').value))>50) tip.push(targetRGB.b>parseInt(document.getElementById('blueSlider').value)?'🔵 调高蓝色':'🔵 调低蓝色');
+            document.getElementById('hint').textContent=tip.join(' | ')||'💡 很接近了！微调一下';
+            document.getElementById('hint').style.display='block';
         }
         function updateMixed() {
             const r=parseInt(document.getElementById('redSlider').value);
