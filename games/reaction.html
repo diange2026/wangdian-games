@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反应测试 - 手速挑战</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; padding: 20px; color: #fff;
+        }
+        .container { text-align: center; max-width: 500px; }
+        .title { font-size: 36px; margin-bottom: 30px; }
+        .game-area {
+            width: 100%; height: 400px; background: rgba(255,255,255,0.1);
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; margin-bottom: 30px; position: relative; overflow: hidden;
+        }
+        .waiting { font-size: 24px; }
+        .click-now { font-size: 48px; font-weight: bold; animation: pulse 0.3s infinite; }
+        .result { font-size: 32px; }
+        .target {
+            width: 60px; height: 60px; background: #ff4444; border-radius: 50%;
+            position: absolute; cursor: pointer; animation: appear 0.2s;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes appear { from { transform: scale(0); } to { transform: scale(1); } }
+        .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 15px; margin-bottom: 30px; }
+        .stat-box { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 15px; }
+        .stat-label { font-size: 12px; opacity: 0.9; margin-bottom: 10px; }
+        .stat-value { font-size: 28px; font-weight: bold; }
+        .btn {
+            padding: 15px 40px; background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white; border: none; border-radius: 15px; font-size: 18px;
+            font-weight: bold; cursor: pointer; margin: 10px;
+        }
+        .rank { font-size: 20px; margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.2); border-radius: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">⚡ 反应测试</div>
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">最快</div>
+                <div class="stat-value" id="best">-</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">平均</div>
+                <div class="stat-value" id="average">-</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">测试次数</div>
+                <div class="stat-value" id="count">0</div>
+            </div>
+        </div>
+        <div class="game-area" id="gameArea">
+            <div class="waiting">点击任意位置开始</div>
+        </div>
+        <div class="rank" id="rank"></div>
+    </div>
+    <script>
+        let gameState='waiting', startTime, timeoutId, reactionTimes=[], targetShown=false;
+        const gameArea=document.getElementById('gameArea');
+        gameArea.addEventListener('click',handleClick);
+        gameArea.addEventListener('touchstart',e=>{ e.preventDefault(); handleClick(); });
+        function handleClick() {
+            if(gameState==='waiting') {
+                gameState='ready';
+                gameArea.innerHTML='<div class="waiting">等待绿色...</div>';
+                gameArea.style.background='rgba(255,255,255,0.1)';
+                const delay=Math.random()*2000+1500;
+                timeoutId=setTimeout(showTarget,delay);
+            } else if(gameState==='ready') {
+                clearTimeout(timeoutId);
+                gameArea.innerHTML='<div class="waiting">太早了！重新开始</div>';
+                setTimeout(()=>{ gameState='waiting'; gameArea.innerHTML='<div class="waiting">点击任意位置开始</div>'; },1000);
+            } else if(gameState==='click') {
+                const reactionTime=Date.now()-startTime;
+                reactionTimes.push(reactionTime);
+                saveResult(reactionTime);
+                gameArea.innerHTML=`<div class="result">${reactionTime}ms</div>`;
+                gameState='result';
+                setTimeout(()=>{ gameState='waiting'; gameArea.innerHTML='<div class="waiting">点击任意位置开始</div>'; },2000);
+            }
+        }
+        function showTarget() {
+            gameState='click';
+            startTime=Date.now();
+            gameArea.innerHTML='';
+            gameArea.style.background='rgba(76,175,80,0.3)';
+            const target=document.createElement('div');
+            target.className='target';
+            target.style.left=Math.random()*(gameArea.offsetWidth-60)+'px';
+            target.style.top=Math.random()*(gameArea.offsetHeight-60)+'px';
+            gameArea.appendChild(target);
+        }
+        function saveResult(time) {
+            localStorage.setItem('reaction-times',JSON.stringify(reactionTimes));
+            document.getElementById('count').textContent=reactionTimes.length;
+            document.getElementById('best').textContent=Math.min(...reactionTimes)+'ms';
+            const avg=Math.round(reactionTimes.reduce((a,b)=>a+b,0)/reactionTimes.length);
+            document.getElementById('average').textContent=avg+'ms';
+            let rank='🥉 普通';
+            if(time<200) rank='🏆 神级反应！';
+            else if(time<250) rank='🥇 优秀！';
+            else if(time<300) rank='🥈 良好';
+            document.getElementById('rank').textContent=`你的等级：${rank}`;
+        }
+        const saved=localStorage.getItem('reaction-times');
+        if(saved) { reactionTimes=JSON.parse(saved); document.getElementById('count').textContent=reactionTimes.length; document.getElementById('best').textContent=Math.min(...reactionTimes)+'ms'; const avg=Math.round(reactionTimes.reduce((a,b)=>a+b,0)/reactionTimes.length); document.getElementById('average').textContent=avg+'ms'; }
+    </script>
+</body>
+</html>

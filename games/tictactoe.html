@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>井字棋 - 双人对战</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; padding: 20px; color: #fff;
+        }
+        .title { font-size: 36px; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .status { font-size: 24px; margin-bottom: 20px; padding: 15px 30px; background: rgba(255,255,255,0.2); border-radius: 15px; }
+        .board { display: grid; grid-template-columns: repeat(3, 100px); gap: 10px; margin-bottom: 30px; }
+        .cell {
+            width: 100px; height: 100px; background: rgba(255,255,255,0.2); border: none;
+            border-radius: 15px; font-size: 64px; font-weight: bold; cursor: pointer;
+            transition: all 0.3s; display: flex; align-items: center; justify-content: center;
+        }
+        .cell:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+        .cell.taken { cursor: not-allowed; }
+        .btn {
+            padding: 15px 40px; background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white; border: none; border-radius: 15px; font-size: 18px;
+            font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255,107,107,0.4);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,107,0.6); }
+        .score-board { display: flex; gap: 30px; margin-bottom: 30px; }
+        .score-box { text-align: center; padding: 15px 30px; background: rgba(255,255,255,0.2); border-radius: 15px; }
+        .score-label { font-size: 14px; margin-bottom: 10px; }
+        .score-value { font-size: 32px; font-weight: bold; }
+        .winning { animation: pulse 0.5s infinite alternate; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
+    </style>
+</head>
+<body>
+    <div class="title">⭕ 井字棋</div>
+    <div class="score-board">
+        <div class="score-box"><div class="score-label">玩家 X</div><div class="score-value" id="scoreX">0</div></div>
+        <div class="score-box"><div class="score-label">平局</div><div class="score-value" id="scoreDraw">0</div></div>
+        <div class="score-box"><div class="score-label">玩家 O</div><div class="score-value" id="scoreO">0</div></div>
+    </div>
+    <div class="status" id="status">玩家 X 的回合</div>
+    <div class="board" id="board"></div>
+    <button class="btn" onclick="resetGame()">🔄 重新开始</button>
+    <script>
+        let board=[], currentPlayer='X', gameActive=true, scores={X:0, O:0, draw:0};
+        const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        function init() {
+            board=Array(9).fill(null);
+            const boardEl=document.getElementById('board');
+            boardEl.innerHTML='';
+            for(let i=0;i<9;i++) {
+                const cell=document.createElement('button');
+                cell.className='cell';
+                cell.dataset.index=i;
+                cell.onclick=()=>makeMove(i);
+                boardEl.appendChild(cell);
+            }
+        }
+        function makeMove(i) {
+            if(board[i]||!gameActive) return;
+            board[i]=currentPlayer;
+            const cells=document.querySelectorAll('.cell');
+            cells[i].textContent=currentPlayer;
+            cells[i].classList.add('taken');
+            if(checkWin()) {
+                gameActive=false;
+                document.getElementById('status').textContent=`🎉 玩家 ${currentPlayer} 获胜！`;
+                scores[currentPlayer]++;
+                updateScores();
+                highlightWin();
+            } else if(board.every(cell=>cell)) {
+                gameActive=false;
+                document.getElementById('status').textContent='🤝 平局！';
+                scores.draw++;
+                updateScores();
+            } else {
+                currentPlayer=currentPlayer==='X'?'O':'X';
+                document.getElementById('status').textContent=`玩家 ${currentPlayer} 的回合`;
+            }
+        }
+        function checkWin() {
+            return wins.some(combo=>board[combo[0]]&&board[combo[0]]===board[combo[1]]&&board[combo[1]]===board[combo[2]]);
+        }
+        function highlightWin() {
+            const cells=document.querySelectorAll('.cell');
+            wins.forEach(combo=>{
+                if(board[combo[0]]&&board[combo[0]]===board[combo[1]]&&board[combo[1]]===board[combo[2]]) {
+                    combo.forEach(i=>cells[i].classList.add('winning'));
+                }
+            });
+        }
+        function updateScores() {
+            document.getElementById('scoreX').textContent=scores.X;
+            document.getElementById('scoreO').textContent=scores.O;
+            document.getElementById('scoreDraw').textContent=scores.draw;
+        }
+        function resetGame() { init(); currentPlayer='X'; gameActive=true; document.getElementById('status').textContent='玩家 X 的回合'; }
+        init();
+    </script>
+</body>
+</html>

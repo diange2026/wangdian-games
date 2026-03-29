@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扫雷 - 经典益智游戏</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+        }
+        .container { text-align: center; }
+        .title { font-size: 36px; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .stats {
+            display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 10px;
+        }
+        .stat-label { font-size: 12px; opacity: 0.9; }
+        .stat-value { font-size: 24px; font-weight: bold; }
+        .grid {
+            display: grid; gap: 3px; background: rgba(0,0,0,0.3); padding: 10px;
+            border-radius: 10px; margin: 0 auto 20px;
+        }
+        .cell {
+            width: 35px; height: 35px; background: rgba(255,255,255,0.3); border: none;
+            border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cell:hover { background: rgba(255,255,255,0.5); }
+        .cell.revealed { background: rgba(255,255,255,0.1); cursor: default; }
+        .cell.mine { background: #ff4444; }
+        .cell.flagged { background: #ffcc00; }
+        .btn {
+            padding: 12px 30px; background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white; border: none; border-radius: 10px; font-size: 16px;
+            font-weight: bold; cursor: pointer; margin: 5px;
+        }
+        .message {
+            margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.2);
+            border-radius: 15px; font-size: 20px; display: none;
+        }
+        .message.show { display: block; animation: slideIn 0.5s; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">💣 扫雷</div>
+        <div class="stats">
+            <div class="stat-box"><div class="stat-label">剩余雷数</div><div class="stat-value" id="minesLeft">10</div></div>
+            <div class="stat-box"><div class="stat-label">时间</div><div class="stat-value" id="timer">0s</div></div>
+        </div>
+        <div class="grid" id="grid"></div>
+        <div class="message" id="message"></div>
+        <button class="btn" onclick="initGame(9,9,10)">🎯 简单 (9×9)</button>
+        <button class="btn" onclick="initGame(16,16,40)">🎯 中等 (16×16)</button>
+        <button class="btn" onclick="initGame(16,30,99)">🎯 困难 (30×16)</button>
+    </div>
+    <script>
+        let grid=[], rows=9, cols=9, mines=10, revealed=0, flagged=0, timer=0, gameInterval=null, gameOver=false;
+        function initGame(r,c,m) {
+            rows=r; cols=c; mines=m; revealed=0; flagged=0; timer=0; gameOver=false;
+            document.getElementById('minesLeft').textContent=m;
+            document.getElementById('message').classList.remove('show');
+            if(gameInterval) clearInterval(gameInterval);
+            gameInterval=setInterval(()=>{timer++;document.getElementById('timer').textContent=timer+'s';},1000);
+            grid=Array(rows).fill(null).map(()=>Array(cols).fill({mine:false,revealed:false,flagged:false,neighbor:0}));
+            let minePositions=[];
+            while(minePositions.length<mines) {
+                let pos=Math.floor(Math.random()*rows*cols);
+                if(!minePositions.includes(pos)) minePositions.push(pos);
+            }
+            minePositions.forEach(pos=>{
+                let r=Math.floor(pos/cols), c=pos%cols;
+                grid[r][c]={mine:true, revealed:false, flagged:false, neighbor:0};
+            });
+            for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) {
+                if(!grid[r][c].mine) {
+                    let count=0;
+                    for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++) {
+                        let nr=r+dr, nc=c+dc;
+                        if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&grid[nr][nc].mine) count++;
+                    }
+                    grid[r][c].neighbor=count;
+                }
+            }
+            renderGrid();
+        }
+        function renderGrid() {
+            const gridEl=document.getElementById('grid');
+            gridEl.innerHTML='';
+            gridEl.style.gridTemplateColumns=`repeat(${cols}, 35px)`;
+            for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) {
+                const cell=document.createElement('button');
+                cell.className='cell';
+                cell.dataset.r=r; cell.dataset.c=c;
+                if(grid[r][c].revealed) {
+                    cell.classList.add('revealed');
+                    if(grid[r][c].mine) { cell.classList.add('mine'); cell.textContent='💣'; }
+                    else if(grid[r][c].neighbor>0) {
+                        const colors=['','#2196F3','#4CAF50','#f44336','#9C27B0','#FF9800','#00BCD4','#795548','#607D8B'];
+                        cell.style.color=colors[grid[r][c].neighbor];
+                        cell.textContent=grid[r][c].neighbor;
+                    }
+                } else if(grid[r][c].flagged) { cell.classList.add('flagged'); cell.textContent='🚩'; }
+                cell.onclick=(e)=>{ if(e.shiftKey||gameOver) toggleFlag(r,c); else revealCell(r,c); };
+                cell.oncontextmenu=(e)=>{ e.preventDefault(); toggleFlag(r,c); };
+                gridEl.appendChild(cell);
+            }
+        }
+        function revealCell(r,c) {
+            if(r<0||r>=rows||c<0||c>=cols||grid[r][c].revealed||grid[r][c].flagged||gameOver) return;
+            grid[r][c].revealed=true; revealed++;
+            if(grid[r][c].mine) {
+                gameOver=true; clearInterval(gameInterval);
+                grid.forEach((row,i)=>row.forEach((cell,j)=>{ if(cell.mine) grid[i][j].revealed=true; }));
+                renderGrid();
+                document.getElementById('message').innerHTML='💥 游戏结束！<br>踩到地雷了！';
+                document.getElementById('message').classList.add('show');
+            } else {
+                if(grid[r][c].neighbor===0) {
+                    for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++) revealCell(r+dr,c+dc);
+                }
+                if(revealed===rows*cols-mines) {
+                    gameOver=true; clearInterval(gameInterval);
+                    document.getElementById('message').innerHTML='🎉 恭喜获胜！<br>用时：'+timer+'秒';
+                    document.getElementById('message').classList.add('show');
+                }
+                renderGrid();
+            }
+        }
+        function toggleFlag(r,c) {
+            if(gameOver||grid[r][c].revealed) return;
+            grid[r][c].flagged=!grid[r][c].flagged;
+            flagged+=grid[r][c].flagged?1:-1;
+            document.getElementById('minesLeft').textContent=mines-flagged;
+            renderGrid();
+        }
+        initGame(9,9,10);
+    </script>
+</body>
+</html>
