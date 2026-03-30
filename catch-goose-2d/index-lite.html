@@ -125,6 +125,10 @@
             <h1>🦢 抓大鹅 2D</h1>
             <div class="stats">
                 <div class="stat">
+                    <div class="stat-label">关卡</div>
+                    <div class="stat-value" id="level">1/5</div>
+                </div>
+                <div class="stat">
                     <div class="stat-label">时间</div>
                     <div class="stat-value" id="timer">60s</div>
                 </div>
@@ -169,6 +173,7 @@
         const msgText = document.getElementById('msgText');
         const timerEl = document.getElementById('timer');
         const matchedEl = document.getElementById('matched');
+        const levelEl = document.getElementById('level');
         const slotBar = document.getElementById('slotBar');
         
         // 游戏状态
@@ -178,6 +183,17 @@
         let timeLeft = 60;
         let gameActive = false;
         let timerInterval = null;
+        let currentLevel = 1;
+        let totalLevels = 5;
+        
+        // 难度配置
+        const difficultyConfig = {
+            1: { layers: 2, types: 4, time: 60, speed: 1.0 },    // 简单：2 层，4 种
+            2: { layers: 3, types: 5, time: 70, speed: 1.0 },    // 普通：3 层，5 种
+            3: { layers: 4, types: 6, time: 80, speed: 0.9 },    // 困难：4 层，6 种
+            4: { layers: 5, types: 7, time: 90, speed: 0.8 },    // 专家：5 层，7 种
+            5: { layers: 6, types: 8, time: 100, speed: 0.7 }    // 大师：6 层，8 种
+        };
         
         // 物品类型（用颜色和 emoji）
         const itemTypes = [
@@ -186,7 +202,11 @@
             { color: '#45B7D1', emoji: '🐰' },
             { color: '#F7B731', emoji: '🐱' },
             { color: '#A3CB38', emoji: '🐶' },
-            { color: '#D980FA', emoji: '🐸' }
+            { color: '#D980FA', emoji: '🐸' },
+            { color: '#FF8E53', emoji: '🦊' },
+            { color: '#2ED573', emoji: '🐼' },
+            { color: '#1E90FF', emoji: '🐨' },
+            { color: '#FF4757', emoji: '🐯' }
         ];
         
         // 初始化
@@ -209,10 +229,13 @@
         // 开始游戏
         function startGame() {
             gameActive = true;
-            timeLeft = 60;
             matchedCount = 0;
             items = [];
             slots = Array(7).fill(null);
+            
+            // 获取当前关卡配置
+            const config = difficultyConfig[currentLevel] || difficultyConfig[5];
+            timeLeft = config.time;
             
             // 清空槽位 UI
             const slotEls = slotBar.querySelectorAll('.slot');
@@ -222,12 +245,13 @@
             });
             
             // 更新显示
-            timerEl.textContent = '60s';
+            levelEl.textContent = `${currentLevel}/${totalLevels}`;
+            timerEl.textContent = timeLeft + 's';
             matchedEl.textContent = '0';
             timerEl.style.color = 'white';
             
-            // 生成物品
-            generateItems(3, 5);
+            // 生成物品（根据关卡难度）
+            generateItems(config.layers, config.types);
             
             // 启动计时器
             if (timerInterval) clearInterval(timerInterval);
@@ -247,37 +271,67 @@
             draw();
         }
         
-        // 生成物品
+        // 下一关
+        function nextLevel() {
+            currentLevel++;
+            if (currentLevel > totalLevels) {
+                // 通关全部关卡
+                gameWin();
+            } else {
+                startGame();
+            }
+        }
+        
+        // 生成物品（带层级）
         function generateItems(layers, typesCount) {
             const selectedTypes = itemTypes.slice(0, typesCount);
+            const itemsPerLayer = 8 + currentLevel * 2; // 每层物品数随关卡增加
             
-            selectedTypes.forEach(type => {
-                const count = 3 + Math.floor(Math.random() * 3); // 3-5 个
-                for (let i = 0; i < count; i++) {
-                    items.push({
-                        x: Math.random() * 320 + 40,
-                        y: Math.random() * 400 + 50,
-                        type: type,
-                        width: 50,
-                        height: 50,
-                        selected: false,
-                        matched: false
-                    });
-                }
-            });
+            for (let layer = 0; layer < layers; layer++) {
+                selectedTypes.forEach(type => {
+                    const count = 3 + Math.floor(Math.random() * 3); // 3-5 个
+                    for (let i = 0; i < count; i++) {
+                        // 层级偏移，制造堆叠效果
+                        const offsetX = (layer - layers/2) * 15;
+                        const offsetY = (layer - layers/2) * 10;
+                        
+                        items.push({
+                            x: Math.random() * 300 + 50 + offsetX,
+                            y: Math.random() * 350 + 80 + offsetY,
+                            type: type,
+                            width: 50,
+                            height: 50,
+                            layer: layer,
+                            selected: false,
+                            matched: false,
+                            alpha: 1 - (layer * 0.15) // 上层更透明
+                        });
+                    }
+                });
+            }
             
             draw();
         }
         
-        // 绘制游戏
+        // 绘制游戏（带层级效果）
         function draw() {
             drawEmptyBoard();
             
+            // 按层级排序，上层先绘制
+            const sortedItems = [...items].sort((a, b) => b.layer - a.layer);
+            
             // 绘制物品
-            items.forEach(item => {
+            sortedItems.forEach(item => {
                 if (item.matched) return;
                 
+                // 阴影（下层物品）
+                if (item.layer > 0) {
+                    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+                    ctx.fillRect(item.x + 3, item.y + 3, item.width, item.height);
+                }
+                
                 // 背景
+                ctx.globalAlpha = item.alpha || 1;
                 ctx.fillStyle = item.type.color;
                 ctx.fillRect(item.x, item.y, item.width, item.height);
                 
@@ -286,13 +340,33 @@
                 ctx.lineWidth = 2;
                 ctx.strokeRect(item.x, item.y, item.width, item.height);
                 
+                // 层级标识（小圆点）
+                if (item.layer > 0) {
+                    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                    ctx.beginPath();
+                    ctx.arc(item.x + item.width - 8, item.y + 8, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
                 // Emoji
+                ctx.globalAlpha = 1;
                 ctx.font = '28px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillStyle = 'white';
                 ctx.fillText(item.type.emoji, item.x + item.width/2, item.y + item.height/2);
             });
+            
+            // 绘制层级提示
+            const maxLayer = Math.max(...items.map(i => i.layer));
+            if (maxLayer > 0) {
+                ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                ctx.fillRect(10, 10, 80, 25);
+                ctx.fillStyle = 'white';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(`层数：${maxLayer + 1}`, 15, 28);
+            }
         }
         
         // 处理点击
@@ -382,7 +456,12 @@
             const remaining = items.filter(i => !i.matched && !i.selected).length;
             
             if (remaining === 0) {
-                gameOver(true);
+                // 当前关卡胜利
+                if (currentLevel < totalLevels) {
+                    showLevelComplete();
+                } else {
+                    gameWin();
+                }
             } else if (slots.filter(s => s !== null).length === 7) {
                 // 槽位满了，检查是否有可消除的
                 const hasMatch = checkPossibleMatch();
@@ -390,6 +469,51 @@
                     gameOver(false);
                 }
             }
+        }
+        
+        // 显示关卡完成
+        function showLevelComplete() {
+            gameActive = false;
+            if (timerInterval) clearInterval(timerInterval);
+            
+            msgTitle.textContent = `🎉 第${currentLevel}关完成！`;
+            msgText.textContent = `准备挑战第${currentLevel + 1}关！`;
+            message.classList.add('show');
+            
+            // 修改按钮为"下一关"
+            replayBtn.textContent = '➡️ 下一关';
+            replayBtn.onclick = () => {
+                message.classList.remove('show');
+                nextLevel();
+                replayBtn.textContent = '🔄 再玩一次';
+                replayBtn.onclick = () => {
+                    message.classList.remove('show');
+                    startGame();
+                };
+            };
+        }
+        
+        // 通关全部关卡
+        function gameWin() {
+            gameActive = false;
+            if (timerInterval) clearInterval(timerInterval);
+            
+            msgTitle.textContent = '🏆 恭喜通关！';
+            msgText.textContent = `你完成了全部${totalLevels}个关卡！\n消除总数：${matchedCount}`;
+            message.classList.add('show');
+            
+            // 修改按钮为"重新开始"
+            replayBtn.textContent = '🔄 从头开始';
+            replayBtn.onclick = () => {
+                currentLevel = 1;
+                message.classList.remove('show');
+                startGame();
+                replayBtn.textContent = '🔄 再玩一次';
+                replayBtn.onclick = () => {
+                    message.classList.remove('show');
+                    startGame();
+                };
+            };
         }
         
         // 检查是否有潜在匹配
@@ -408,9 +532,29 @@
             gameActive = false;
             if (timerInterval) clearInterval(timerInterval);
             
-            msgTitle.textContent = isWin ? '🎉 胜利！' : '😢 游戏结束';
-            msgText.textContent = isWin ? `消除 ${matchedCount} 个物品` : '再来一次吧！';
-            message.classList.add('show');
+            if (isWin) {
+                if (currentLevel < totalLevels) {
+                    showLevelComplete();
+                } else {
+                    gameWin();
+                }
+            } else {
+                msgTitle.textContent = '😢 游戏结束';
+                msgText.textContent = `第${currentLevel}关失败\n消除数：${matchedCount}\n时间到！`;
+                message.classList.add('show');
+                
+                // 失败后重玩当前关卡
+                replayBtn.textContent = '🔄 重试本关';
+                replayBtn.onclick = () => {
+                    message.classList.remove('show');
+                    startGame();
+                    replayBtn.textContent = '🔄 再玩一次';
+                    replayBtn.onclick = () => {
+                        message.classList.remove('show');
+                        startGame();
+                    };
+                };
+            }
         }
         
         // 启动
