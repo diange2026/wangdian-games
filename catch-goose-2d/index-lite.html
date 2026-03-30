@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>抓大鹅 2D - 极简版</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 20px;
+        }
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        #game-canvas {
+            display: block;
+            width: 100%;
+        }
+        .header {
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .stats {
+            display: flex;
+            gap: 15px;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .slot-bar {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            padding: 15px;
+            background: #333;
+        }
+        .slot {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 2px dashed rgba(255,255,255,0.4);
+        }
+        .slot.filled {
+            border-style: solid;
+            background: rgba(255,255,255,0.4);
+        }
+        .controls {
+            padding: 15px;
+            text-align: center;
+        }
+        .btn {
+            padding: 12px 40px;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+        }
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            z-index: 100;
+        }
+        #message.show {
+            display: block;
+        }
+        #message h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        #message p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div class="header">
+            <h1>🦢 抓大鹅 2D</h1>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">时间</div>
+                    <div class="stat-value" id="timer">60s</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">消除</div>
+                    <div class="stat-value" id="matched">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <canvas id="game-canvas" width="400" height="500"></canvas>
+        
+        <div class="slot-bar" id="slotBar">
+            <div class="slot"></div>
+            <div class="slot"></div>
+            <div class="slot"></div>
+            <div class="slot"></div>
+            <div class="slot"></div>
+            <div class="slot"></div>
+            <div class="slot"></div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" id="startBtn">▶️ 开始游戏</button>
+        </div>
+        
+        <div id="message">
+            <h2 id="msgTitle">🎉 胜利！</h2>
+            <p id="msgText">消除所有物品！</p>
+            <button class="btn" id="replayBtn">🔄 再玩一次</button>
+        </div>
+    </div>
+
+    <script>
+        // 游戏配置
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const startBtn = document.getElementById('startBtn');
+        const replayBtn = document.getElementById('replayBtn');
+        const message = document.getElementById('message');
+        const msgTitle = document.getElementById('msgTitle');
+        const msgText = document.getElementById('msgText');
+        const timerEl = document.getElementById('timer');
+        const matchedEl = document.getElementById('matched');
+        const slotBar = document.getElementById('slotBar');
+        
+        // 游戏状态
+        let items = [];
+        let slots = Array(7).fill(null);
+        let matchedCount = 0;
+        let timeLeft = 60;
+        let gameActive = false;
+        let timerInterval = null;
+        
+        // 物品类型（用颜色和 emoji）
+        const itemTypes = [
+            { color: '#FF6B6B', emoji: '🦢' },
+            { color: '#4ECDC4', emoji: '🐥' },
+            { color: '#45B7D1', emoji: '🐰' },
+            { color: '#F7B731', emoji: '🐱' },
+            { color: '#A3CB38', emoji: '🐶' },
+            { color: '#D980FA', emoji: '🐸' }
+        ];
+        
+        // 初始化
+        function init() {
+            startBtn.addEventListener('click', startGame);
+            replayBtn.addEventListener('click', () => {
+                message.classList.remove('show');
+                startGame();
+            });
+            canvas.addEventListener('click', handleCanvasClick);
+            drawEmptyBoard();
+        }
+        
+        // 绘制空游戏板
+        function drawEmptyBoard() {
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        // 开始游戏
+        function startGame() {
+            gameActive = true;
+            timeLeft = 60;
+            matchedCount = 0;
+            items = [];
+            slots = Array(7).fill(null);
+            
+            // 清空槽位 UI
+            const slotEls = slotBar.querySelectorAll('.slot');
+            slotEls.forEach(slot => {
+                slot.textContent = '';
+                slot.classList.remove('filled');
+            });
+            
+            // 更新显示
+            timerEl.textContent = '60s';
+            matchedEl.textContent = '0';
+            timerEl.style.color = 'white';
+            
+            // 生成物品
+            generateItems(3, 5);
+            
+            // 启动计时器
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft + 's';
+                
+                if (timeLeft <= 10) {
+                    timerEl.style.color = '#ff6b6b';
+                }
+                
+                if (timeLeft <= 0) {
+                    gameOver(false);
+                }
+            }, 1000);
+            
+            draw();
+        }
+        
+        // 生成物品
+        function generateItems(layers, typesCount) {
+            const selectedTypes = itemTypes.slice(0, typesCount);
+            
+            selectedTypes.forEach(type => {
+                const count = 3 + Math.floor(Math.random() * 3); // 3-5 个
+                for (let i = 0; i < count; i++) {
+                    items.push({
+                        x: Math.random() * 320 + 40,
+                        y: Math.random() * 400 + 50,
+                        type: type,
+                        width: 50,
+                        height: 50,
+                        selected: false,
+                        matched: false
+                    });
+                }
+            });
+            
+            draw();
+        }
+        
+        // 绘制游戏
+        function draw() {
+            drawEmptyBoard();
+            
+            // 绘制物品
+            items.forEach(item => {
+                if (item.matched) return;
+                
+                // 背景
+                ctx.fillStyle = item.type.color;
+                ctx.fillRect(item.x, item.y, item.width, item.height);
+                
+                // 边框
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(item.x, item.y, item.width, item.height);
+                
+                // Emoji
+                ctx.font = '28px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = 'white';
+                ctx.fillText(item.type.emoji, item.x + item.width/2, item.y + item.height/2);
+            });
+        }
+        
+        // 处理点击
+        function handleCanvasClick(e) {
+            if (!gameActive) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            
+            // 检查点击了哪个物品
+            for (let i = items.length - 1; i >= 0; i--) {
+                const item = items[i];
+                if (item.matched || item.selected) continue;
+                
+                if (x >= item.x && x <= item.x + item.width &&
+                    y >= item.y && y <= item.y + item.height) {
+                    selectItem(item);
+                    break;
+                }
+            }
+        }
+        
+        // 选择物品
+        function selectItem(item) {
+            const emptyIndex = slots.findIndex(s => s === null);
+            if (emptyIndex === -1) {
+                gameOver(false);
+                return;
+            }
+            
+            item.selected = true;
+            slots[emptyIndex] = item;
+            
+            // 更新槽位 UI
+            updateSlots();
+            
+            // 检查匹配
+            checkMatch();
+        }
+        
+        // 更新槽位显示
+        function updateSlots() {
+            const slotEls = slotBar.querySelectorAll('.slot');
+            slotEls.forEach((slot, i) => {
+                if (slots[i]) {
+                    slot.textContent = slots[i].type.emoji;
+                    slot.classList.add('filled');
+                } else {
+                    slot.textContent = '';
+                    slot.classList.remove('filled');
+                }
+            });
+        }
+        
+        // 检查匹配
+        function checkMatch() {
+            for (let i = 2; i < 7; i++) {
+                if (slots[i] && slots[i-1] && slots[i-2] &&
+                    slots[i].type.color === slots[i-1].type.color &&
+                    slots[i-1].type.color === slots[i-2].type.color) {
+                    
+                    // 匹配成功
+                    setTimeout(() => {
+                        slots[i].matched = true;
+                        slots[i-1].matched = true;
+                        slots[i-2].matched = true;
+                        slots[i] = null;
+                        slots[i-1] = null;
+                        slots[i-2] = null;
+                        
+                        matchedCount += 3;
+                        matchedEl.textContent = matchedCount;
+                        
+                        updateSlots();
+                        draw();
+                        checkWin();
+                    }, 300);
+                    
+                    return;
+                }
+            }
+        }
+        
+        // 检查胜利
+        function checkWin() {
+            const remaining = items.filter(i => !i.matched && !i.selected).length;
+            
+            if (remaining === 0) {
+                gameOver(true);
+            } else if (slots.filter(s => s !== null).length === 7) {
+                // 槽位满了，检查是否有可消除的
+                const hasMatch = checkPossibleMatch();
+                if (!hasMatch) {
+                    gameOver(false);
+                }
+            }
+        }
+        
+        // 检查是否有潜在匹配
+        function checkPossibleMatch() {
+            const colorCount = {};
+            slots.forEach(slot => {
+                if (slot) {
+                    colorCount[slot.type.color] = (colorCount[slot.type.color] || 0) + 1;
+                }
+            });
+            return Object.values(colorCount).some(count => count >= 3);
+        }
+        
+        // 游戏结束
+        function gameOver(isWin) {
+            gameActive = false;
+            if (timerInterval) clearInterval(timerInterval);
+            
+            msgTitle.textContent = isWin ? '🎉 胜利！' : '😢 游戏结束';
+            msgText.textContent = isWin ? `消除 ${matchedCount} 个物品` : '再来一次吧！';
+            message.classList.add('show');
+        }
+        
+        // 启动
+        init();
+    </script>
+</body>
+</html>
