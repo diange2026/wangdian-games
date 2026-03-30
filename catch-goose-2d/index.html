@@ -18,17 +18,31 @@
             position: relative;
             width: 100%;
             max-width: 450px;
-            aspect-ratio: 9/16;
+            height: 800px;
             background: #fff;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #667eea;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
-    <div id="game-container"></div>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+    <div id="game-container">
+        <div id="loading">加载中...</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <script src="js/BootScene.js"></script>
+    <script src="js/GameScene.js"></script>
+    <script src="js/UIScene.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
