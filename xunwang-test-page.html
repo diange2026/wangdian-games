@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>讯网教学云平台 - 测试答案页面</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #4a6ee0, #6a11cb);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .question-item {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background: #fafafa;
+            position: relative;
+        }
+        .question-number {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #4a6ee0;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .question-content {
+            margin-left: 40px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .answer-section {
+            background: #e8f4e8;
+            border-left: 4px solid #2ecc71;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .user-answer {
+            background: #f0f7ff;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .correct-answer {
+            color: #2ecc71;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f39c12;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .knowledge-tag {
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin: 5px 5px 0 0;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .status.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .navigation {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        .navigation a {
+            color: #4a6ee0;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .navigation a:hover {
+            background: #4a6ee0;
+            color: white;
+        }
+        .stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4a6ee0;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题和导航 -->
+        <div class="header">
+            <h1>📚 讯网教学云平台</h1>
+            <p>网络助学 - 平时作业 - 作业记录 - 详情</p>
+        </div>
+        
+        <div class="navigation">
+            <a href="#">首页</a> › 
+            <a href="#">网络助学</a> › 
+            <a href="#">平时作业</a> › 
+            <a href="#">作业记录</a> › 
+            <strong>详情</strong>
+        </div>
+        
+        <!-- 统计信息 -->
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value">50</div>
+                <div class="stat-label">总题目数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">45</div>
+                <div class="stat-label">正确题目</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">90%</div>
+                <div class="stat-label">正确率</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">95</div>
+                <div class="stat-label">总得分</div>
+            </div>
+        </div>
+        
+        <!-- 题目列表 -->
+        <h2>作业详情：第一次平时作业</h2>
+        <p>课程：经济学原理 | 提交时间：2026-04-19 14:30</p>
+        
+        <!-- 第1题 -->
+        <div class="question-item">
+            <div class="question-number">1</div>
+            <div class="question-content">
+                <strong>题目：</strong>
+                以下哪项不是经济学研究的基本问题？
+            </div>
+            
+            <div class="answer-section">
+                <div class="correct-answer">
+                    <strong>标准答案：</strong>
+                    资源的有限性
+                </div>
+                <div class="user-answer">
+                    <strong>你的答案：</strong>
+                    资源的有限性
+                </div>
+            </div>
+            
+            <div class="score">2分</div>
+            <span class="status correct">✓ 正确</span>
+            <span class="knowledge-tag">经济学基础</span>
+            <span class="knowledge-tag">基本概念</span>
+        </div>
+        
+        <!-- 第2题 -->
+        <div class="question-item">
+            <div class="question-number">2</div>
+            <div class="question-content">
+                <strong>题目：</strong>
+                市场失灵的主要原因不包括以下哪项？
+            </div>
+            
+            <div class="answer-section">
+                <div class="correct-answer">
+                    <strong>标准答案：</strong>
+                    完全竞争
+                </div>
+                <div class="user-answer">
+                    <strong>你的答案：</strong>
+                    信息不对称
+                </div>
+            </div>
+            
+            <div class="score">0分</div>
+            <span class="status incorrect">✗ 错误</span>
+            <span class="knowledge-tag">市场理论</span>
+            <span class="knowledge-tag">市场失灵</span>
+        </div>
+        
+        <!-- 第3题 -->
+        <div class="question-item">
+            <div class="question-number">3</div>
+            <div class="question-content">
+                <strong>题目：</strong>
+                GDP的计算方法不包括以下哪项？
+            </div>
+            
+            <div class="answer-section">
+                <div class="correct-answer">
+                    <strong>标准答案：</strong>
+                    中间产品法
+                </div>
+                <div class="user-answer">
+                    <strong>你的答案：</strong>
+                    中间产品法
+                </div>
+            </div>
+            
+            <div class="score">3分</div>
+            <span class="status correct">✓ 正确</span>
+            <span class="knowledge-tag">宏观经济</span>
+            <span class="knowledge-tag">GDP计算</span>
+        </div>
+        
+        <!-- 第4题 -->
+        <div class="question-item">
+            <div class="question-number">4</div>
+            <div class="question-content">
+                <strong>题目（多选题）：</strong>
+                以下哪些属于货币政策工具？
+            </div>
+            
+            <div class="answer-section">
+                <div class="correct-answer">
+                    <strong>标准答案：</strong>
+                    公开市场操作、存款准备金率、再贴现率
+                </div>
+                <div class="user-answer">
+                    <strong>你的答案：</strong>
+                    公开市场操作、存款准备金率、再贴现率
+                </div>
+            </div>
+            
+            <div class="score">5分</div>
+            <span class="status correct">✓ 正确</span>
+            <span class="knowledge-tag">货币政策</span>
+            <span class="knowledge-tag">宏观调控</span>
+        </div>
+        
+        <!-- 第5题 -->
+        <div class="question-item">
+            <div class="question-number">5</div>
+            <div class="question-content">
+                <strong>题目（简答题）：</strong>
+                请简述通货膨胀的类型及其成因。
+            </div>
+            
+            <div class="answer-section">
+                <div class="correct-answer">
+                    <strong>标准答案：</strong>
+                    通货膨胀主要分为需求拉动型、成本推动型和结构性通货膨胀。需求拉动型主要由总需求过度增长引起；成本推动型主要由生产成本上升引起；结构性通货膨胀主要由经济结构失衡引起。
+                </div>
+                <div class="user-answer">
+                    <strong>你的答案：</strong>
+                    通货膨胀分为需求拉动型（总需求过度增长）、成本推动型（生产成本上升）和结构性通货膨胀（经济结构失衡）。
+                </div>
+            </div>
+            
+            <div class="score">4分</div>
+            <span class="status correct">✓ 正确</span>
+            <span class="knowledge-tag">通货膨胀</span>
+            <span class="knowledge-tag">宏观经济</span>
+        </div>
+        
+        <!-- 第6题 -->
+        <div class="question-item">
+            <div class="question-number">6</div>
+            <div class="question-content">
+                <strong>题目（判断题）：</strong>
+                边际效用递减规律是微观经济学的基本规律。
+            </div>
+            
+            <div class="answer-section">
+                <div class="correct-answer">
+                    <strong>标准答案：</strong>
+                    正确
+                </div>
+                <div class="user-answer">
+                    <strong>你的答案：</strong>
+                    正确
+                </div>
+            </div>
+            
+            <div class="score">1分</div>
+            <span class="status correct">✓ 正确</span>
+            <span class="knowledge-tag">微观经济</span>
+            <span class="knowledge-tag">效用理论</span>
+        </div>
+        
+        <!-- 第7题 -->
+        <div class="question-item">
+            <div class="question-number">7</div>
+            <div class="question-content">
+                <strong>题目（计算题）：</strong>
+                已知某商品的需求函数为 Qd=100-2P，供给函数为 Qs=20+3P，求市场均衡价格和数量。
+            </div>
+            
+            <div class="answer-section">
+                <div class="correct-answer">
+                    <strong>标准答案：</strong>
+                    均衡价格 P=16，均衡数量 Q=68
+                </div>
+                <div class="user-answer">
+                    <strong>你的答案：</strong>
+                    均衡价格 P=16，均衡数量 Q=68
+                </div>
+            </div>
+            
+            <div class="score">6分</div>
+            <span class="status correct">✓ 正确</span>
+            <span class="knowledge-tag">供需理论</span>
+            <span class="knowledge-tag">计算题</span>
+        </div>
+        
+        <!-- 第8题 -->
+        <div class="question-item">
+            <div class="question-number">8</div>
+            <div class="question-content">
+                <strong>题目：</strong>
+                以下关于完全竞争市场的描述，错误的是？
+            </div>
+            
+            <div class="answer-section">
+                <div class="correct-answer">
+                    <strong>标准答案：</strong>
+                    厂商可以自由设定价格
+                </div>
+                <div class="user-answer">
+                    <strong>你的答案：</strong>
+                    产品同质化
+                </div>
+            </div>
+            
+            <div class="score">0分</div>
+            <span class="status incorrect">✗ 错误</span>
+            <span class="knowledge-tag">市场结构</span>
+            <span class="knowledge-tag">完全竞争</span>
+        </div>
+        
+        <!-- 第9题 -->
+        <div class="question-item">
+            <div class="question-number">9</div>
+            <div class="question-content">
+                <strong>题目：</strong>
+                机会成本是指？
+            </div>
+            
+            <div class="answer-section">
+                <div class="correct-answer">
+                    <strong>标准答案：</strong>
+                    为得到某种东西而所要放弃另一些东西的最大价值
+                </div>
+                <div class="user-answer">
+                    <strong>你的答案：</strong>
+                    为得到某种东西而所要放弃另一些东西的最大价值
+                </div>
+            </div>
+            
+            <div class="score">2分</div>
+            <span class="status correct">✓ 正确</span>
+            <span class="knowledge-tag">成本理论</span>
+            <span class="knowledge-tag">机会成本</span>
+        </div>
+        
+        <!-- 第10题 -->
+        <div class="question-item">
+            <div class="question-number">10</div>
+            <div class="question-content">
+                <strong>题目（论述题）：</strong>
+                论述财政政策与货币政策的区别与联系。
+            </div>
+            
+            <div class="answer-section">
+                <div class="correct-answer">
+                    <strong>标准答案：</strong>
+                    财政政策主要通过政府支出和税收调节经济，货币政策主要通过控制货币供应量和利率调节经济。两者都是宏观调控工具，可以配合使用以达到更好的经济稳定效果。
+                </div>
+                <div class="user-answer">
+                    <strong>你的答案：</strong>
+                    财政政策由财政部门实施，通过政府支出和税收调节；货币政策由中央银行实施，通过货币供应和利率调节。两者可以协同作用，实现经济稳定。
+                </div>
+            </div>
+            
+            <div class="score">8分</div>
+            <span class="status correct">✓ 正确</span>
+            <span class="knowledge-tag">宏观调控</span>
+            <span class="knowledge-tag">财政政策</span>
+            <span class="knowledge-tag">货币政策</span>
+        </div>
+        
+        <!-- 分页 -->
+        <div style="text-align: center; margin-top: 30px;">
+            <span style="margin: 0 10px;">第1页/共5页</span>
+            <a href="#" style="margin: 0 10px;">下一页</a>
+        </div>
+        
+        <!-- 提示信息 -->
+        <div style="margin-top: 40px; padding: 20px; background: #e7f0ff; border-radius: 8px; border-left: 4px solid #4a6ee0;">
+            <h3>💡 插件测试提示</h3>
+            <p>这是一个模拟的讯网答案页面，用于测试"讯网答案提取器"插件。</p>
+            <p>要测试插件功能：</p>
+            <ol>
+                <li>安装并启用插件</li>
+                <li>刷新此页面</li>
+                <li>点击浏览器工具栏中的插件图标</li>
+                <li>点击"一键提取答案"按钮</li>
+                <li>查看提取结果并导出数据</li>
+            </ol>
+            <p><strong>页面URL包含"assignments-detail"，插件会自动识别为答案页面。</strong></p>
+        </div>
+    </div>
+    
+    <!-- 模拟讯网平台的一些脚本 -->
+    <script>
+        // 模拟讯网平台的一些功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 更新页面标题，模拟真实页面
+            document.title = "作业详情 - 讯网教学云平台";
+            
+            // 添加页面加载完成事件
+            setTimeout(function() {
+                console.log('讯网页面加载完成，准备显示题目数据...');
+            }, 1000);
+            
+            // 模拟插件检测
+            if (typeof chrome !== 'undefined' && chrome.runtime) {
+                // 这里可以模拟与插件的交互
+                console.log('检测到Chrome扩展环境');
+            }
+        });
+    </script>
+</body>
+</html>

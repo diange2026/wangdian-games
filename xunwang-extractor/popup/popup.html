@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>讯网题目答案提取器</title>
+    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部区域 -->
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="title">
+                    <h1>讯网答案提取器</h1>
+                    <p class="subtitle">一键提取题目和标准答案</p>
+                </div>
+            </div>
+            <div class="version">v1.0.0</div>
+        </div>
+
+        <!-- 状态指示器 -->
+        <div class="status-card">
+            <div class="status-header">
+                <i class="fas fa-satellite-dish status-icon"></i>
+                <h3>系统状态</h3>
+            </div>
+            <div class="status-content">
+                <div class="status-item">
+                    <span class="status-label">平台连接:</span>
+                    <span class="status-value" id="platformStatus">
+                        <span class="status-indicator" id="platformIndicator"></span>
+                        <span id="platformText">检测中...</span>
+                    </span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">页面状态:</span>
+                    <span class="status-value" id="pageStatus">
+                        <span class="status-indicator" id="pageIndicator"></span>
+                        <span id="pageText">未检测到讯网页面</span>
+                    </span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">数据缓存:</span>
+                    <span class="status-value" id="cacheStatus">
+                        <span class="status-indicator" id="cacheIndicator"></span>
+                        <span id="cacheText">0 条记录</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 课程信息 -->
+        <div class="info-card" id="courseInfoCard" style="display: none;">
+            <div class="info-header">
+                <i class="fas fa-book-open info-icon"></i>
+                <h3>课程信息</h3>
+            </div>
+            <div class="info-content">
+                <div class="info-item">
+                    <span class="info-label">课程名称:</span>
+                    <span class="info-value" id="courseName">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">作业名称:</span>
+                    <span class="info-value" id="assignmentName">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">题目数量:</span>
+                    <span class="info-value" id="questionCount">0</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">提取时间:</span>
+                    <span class="info-value" id="extractTime">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="actions-card">
+            <div class="actions-header">
+                <i class="fas fa-magic actions-icon"></i>
+                <h3>快速操作</h3>
+            </div>
+            <div class="actions-grid">
+                <button id="extractBtn" class="action-btn btn-primary">
+                    <i class="fas fa-bolt"></i>
+                    <span>一键提取答案</span>
+                </button>
+                
+                <button id="exportBtn" class="action-btn btn-secondary" disabled>
+                    <i class="fas fa-file-export"></i>
+                    <span>导出数据</span>
+                </button>
+                
+                <button id="historyBtn" class="action-btn btn-tertiary">
+                    <i class="fas fa-history"></i>
+                    <span>历史记录</span>
+                </button>
+                
+                <button id="settingsBtn" class="action-btn btn-quaternary">
+                    <i class="fas fa-cog"></i>
+                    <span>设置</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 提取进度 -->
+        <div class="progress-card" id="progressCard" style="display: none;">
+            <div class="progress-header">
+                <i class="fas fa-spinner fa-spin progress-icon"></i>
+                <h3>正在提取中...</h3>
+            </div>
+            <div class="progress-content">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">正在初始化...</div>
+                <div class="progress-details" id="progressDetails"></div>
+            </div>
+        </div>
+
+        <!-- 预览区域 -->
+        <div class="preview-card" id="previewCard">
+            <div class="preview-header">
+                <i class="fas fa-eye preview-icon"></i>
+                <h3>数据预览</h3>
+                <button id="togglePreview" class="toggle-btn">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="preview-content" id="previewContent">
+                <div class="empty-state" id="emptyPreview">
+                    <i class="fas fa-inbox"></i>
+                    <p>暂无提取数据</p>
+                    <p class="empty-hint">点击"一键提取答案"开始</p>
+                </div>
+                <div class="preview-table" id="previewTable" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>题目</th>
+                                <th>答案</th>
+                            </tr>
+                        </thead>
+                        <tbody id="previewTableBody">
+                            <!-- 动态生成 -->
+                        </tbody>
+                    </table>
+                    <div class="preview-footer">
+                        <button id="viewAllBtn" class="btn-small">
+                            <i class="fas fa-list"></i>
+                            查看全部
+                        </button>
+                        <button id="clearPreviewBtn" class="btn-small btn-danger">
+                            <i class="fas fa-trash"></i>
+                            清空预览
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 通知区域 -->
+        <div class="notification-area" id="notificationArea"></div>
+
+        <!-- 底部信息 -->
+        <div class="footer">
+            <div class="footer-links">
+                <a href="#" id="helpBtn" title="帮助">
+                    <i class="fas fa-question-circle"></i>
+                </a>
+                <a href="#" id="feedbackBtn" title="反馈">
+                    <i class="fas fa-comment-dots"></i>
+                </a>
+                <a href="#" id="aboutBtn" title="关于">
+                    <i class="fas fa-info-circle"></i>
+                </a>
+            </div>
+            <div class="footer-text">
+                <span id="lastUpdate">最后更新: -</span>
+                <span class="separator">|</span>
+                <span id="dataCount">数据: 0 条</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框容器 -->
+    <div id="modalContainer"></div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

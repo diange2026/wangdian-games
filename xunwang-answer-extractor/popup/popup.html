@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>讯网答案提取器</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部标题区域 -->
+        <div class="header">
+            <div class="logo">
+                <h1>📚 讯网答案提取器</h1>
+                <p class="subtitle">快速提取题目和标准答案</p>
+            </div>
+        </div>
+
+        <!-- 状态显示区域 -->
+        <div class="status-section">
+            <div class="status-item">
+                <span class="status-label">当前页面：</span>
+                <span id="current-page" class="status-value">未检测到讯网页面</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">登录状态：</span>
+                <span id="login-status" class="status-value">未登录</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">检测到题目：</span>
+                <span id="question-count" class="status-value">0 题</span>
+            </div>
+        </div>
+
+        <!-- 核心功能按钮区域 -->
+        <div class="action-section">
+            <button id="extract-btn" class="btn btn-primary btn-large" disabled>
+                <span class="btn-icon">🔍</span>
+                <span class="btn-text">一键提取答案</span>
+            </button>
+            
+            <div class="btn-group">
+                <button id="export-excel-btn" class="btn btn-secondary" disabled>
+                    <span class="btn-icon">📊</span>
+                    <span class="btn-text">导出Excel</span>
+                </button>
+                <button id="export-csv-btn" class="btn btn-secondary" disabled>
+                    <span class="btn-icon">📋</span>
+                    <span class="btn-text">导出CSV</span>
+                </button>
+            </div>
+            
+            <button id="save-local-btn" class="btn btn-success" disabled>
+                <span class="btn-icon">💾</span>
+                <span class="btn-text">保存到本地题库</span>
+            </button>
+        </div>
+
+        <!-- 提取结果显示区域 -->
+        <div class="result-section" id="result-section" style="display: none;">
+            <div class="result-header">
+                <h3>📋 提取结果</h3>
+                <button id="clear-result-btn" class="btn-small">清空</button>
+            </div>
+            <div class="result-list" id="result-list">
+                <!-- 结果列表将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 进度显示 -->
+        <div class="progress-section" id="progress-section" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-text" id="progress-text">正在处理...</div>
+        </div>
+
+        <!-- 底部导航 -->
+        <div class="footer">
+            <div class="footer-nav">
+                <a href="#" id="settings-btn" class="footer-link">
+                    <span class="footer-icon">⚙️</span>
+                    <span class="footer-text">设置</span>
+                </a>
+                <a href="#" id="help-btn" class="footer-link">
+                    <span class="footer-icon">❓</span>
+                    <span class="footer-text">帮助</span>
+                </a>
+                <a href="#" id="about-btn" class="footer-link">
+                    <span class="footer-icon">ℹ️</span>
+                    <span class="footer-text">关于</span>
+                </a>
+            </div>
+            <div class="version">
+                v1.0.0 | © 2026 讯网助手
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

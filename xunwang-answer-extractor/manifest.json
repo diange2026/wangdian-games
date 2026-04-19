@@ -1,0 +1,66 @@
+{
+  "manifest_version": 3,
+  "name": "讯网题目答案提取器",
+  "description": "专为讯网教学云平台设计的答案提取工具，帮助学员快速获取题目和标准答案",
+  "version": "1.0.0",
+  "author": "讯网助手团队",
+  
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "讯网答案提取器",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "downloads",
+    "scripting",
+    "webNavigation"
+  ],
+  
+  "host_permissions": [
+    "https://www.whxunw.com/*",
+    "https://*.whxunw.com/*"
+  ],
+  
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.whxunw.com/student-web/*",
+        "https://www.whxunw.com/exam/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  
+  "options_page": "options/options.html",
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["libs/*"],
+      "matches": ["https://www.whxunw.com/*"]
+    }
+  ],
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
