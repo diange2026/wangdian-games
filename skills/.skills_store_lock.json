@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "cloudbase": {
+      "name": "Cloudbase",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=cloudbase",
+      "source": "skillhub",
+      "version": "1.18.0"
+    },
+    "playwright-cli-openclaw": {
+      "name": "Playwright CLI Automation",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=playwright-cli-openclaw",
+      "source": "skillhub",
+      "version": "1.0.0"
+    },
+    "self-improving-agent-cn": {
+      "name": "Self Improving Agent CN",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=self-improving-agent-cn",
+      "source": "skillhub",
+      "version": "1.0.0"
+    },
+    "find-skills-in-tencent-skillhub": {
+      "name": "find-skills-in-tencent-skillhub",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=find-skills-in-tencent-skillhub",
+      "source": "skillhub",
+      "version": "1.0.4"
+    }
+  }
+}

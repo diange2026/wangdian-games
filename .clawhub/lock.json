@@ -40,6 +40,22 @@
     "ima-skills": {
       "version": "1.1.2",
       "installedAt": 1774597327547
+    },
+    "cloudbase": {
+      "version": "1.18.0",
+      "installedAt": 1776568013025
+    },
+    "playwright-cli-openclaw": {
+      "version": "1.0.0",
+      "installedAt": 1776568014174
+    },
+    "self-improving-agent-cn": {
+      "version": "1.0.0",
+      "installedAt": 1776568101688
+    },
+    "find-skills-in-tencent-skillhub": {
+      "version": "1.0.4",
+      "installedAt": 1776568193535
     }
   }
 }
