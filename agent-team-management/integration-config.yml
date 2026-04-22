@@ -1,0 +1,94 @@
+# 🚀 智能体团队管理系统 - 技能集成配置
+
+## 集成技能列表
+
+### 1. openclaw-team-builder (团队构建器)
+enabled: true
+integration_level: full
+functions:
+  - team_building: 智能体团队构建
+  - role_assignment: 角色分配
+  - skill_matching: 能力匹配
+  - team_optimization: 团队优化
+
+integration_points:
+  - task_assignment_system: 任务分配系统
+  - team_monitoring: 团队监控
+  - performance_analysis: 绩效分析
+
+### 2. team-communication (团队沟通)
+enabled: true
+integration_level: full
+functions:
+  - internal_messaging: 内部消息传递
+  - status_synchronization: 状态同步
+  - progress_reporting: 进度报告
+  - collaboration_logging: 协作日志
+
+integration_points:
+  - task_coordination: 任务协调
+  - team_status_updates: 团队状态更新
+  - real_time_communication: 实时沟通
+
+### 3. 现有核心智能体
+agent-autopilot:
+  enabled: true
+  role: "核心执行引擎"
+  
+self-improving-agent-cn:
+  enabled: true
+  role: "学习与优化"
+  
+agent-memory:
+  enabled: true
+  role: "知识管理"
+  
+agent-browser-clawdbot:
+  enabled: true
+  role: "外部接口"
+
+## 集成工作流程
+
+### 团队构建流程
+1. 接收项目需求
+2. 调用 openclaw-team-builder 分析需求
+3. 构建合适的智能体团队
+4. 分配角色和任务
+5. 启动团队沟通系统
+6. 开始项目执行
+
+### 任务执行流程
+1. 任务分配给团队
+2. team-communication 协调工作
+3. 智能体执行具体任务
+4. 进度同步和状态更新
+5. 完成结果汇总
+6. 生成团队报告
+
+## 监控与优化
+
+### 监控指标
+- 团队构建成功率
+- 沟通效率评分
+- 任务完成时间
+- 团队协作度
+- 资源使用效率
+
+### 优化策略
+- 基于绩效调整团队配置
+- 优化沟通流程
+- 学习最佳实践
+- 持续改进团队能力
+
+## 安全配置
+
+### 访问控制
+- 技能间隔离运行
+- 数据访问权限控制
+- 操作审计日志
+
+### 风险控制
+- 异常行为检测
+- 性能监控告警
+- 安全策略执行
+

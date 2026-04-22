@@ -1,0 +1,80 @@
+# 🏗️ 智能体团队配置
+# 项目: 工贸企业相关方全流程管理系统
+# 创建时间: 2026-04-22 18:28:29
+
+team:
+  name: "工贸企业相关方全流程管理系统 智能体团队"
+  size: 4
+  project: "工贸企业相关方全流程管理系统"
+  
+members:
+  - name: "agent-autopilot"
+    role: "核心开发与项目管理"
+    responsibilities:
+      - "系统架构设计"
+      - "代码开发"
+      - "进度管理"
+      - "部署实施"
+    
+  - name: "self-improving-agent-cn"
+    role: "学习与优化专家"
+    responsibilities:
+      - "代码质量优化"
+      - "性能改进"
+      - "经验积累"
+      - "最佳实践总结"
+    
+  - name: "agent-memory"
+    role: "知识管理系统"
+    responsibilities:
+      - "项目知识管理"
+      - "历史记录存储"
+      - "经验教训总结"
+      - "最佳实践库"
+    
+  - name: "agent-browser-clawdbot"
+    role: "外部接口专家"
+    responsibilities:
+      - "系统部署"
+      - "网页自动化"
+      - "数据验证"
+      - "用户界面测试"
+
+workflow:
+  - phase: "需求分析"
+    duration: "1小时"
+    responsible: ["agent-autopilot", "agent-memory"]
+    
+  - phase: "架构设计"
+    duration: "2小时"
+    responsible: ["agent-autopilot"]
+    
+  - phase: "编码实现"
+    duration: "4小时"
+    responsible: ["agent-autopilot", "self-improving-agent-cn"]
+    
+  - phase: "测试验证"
+    duration: "2小时"
+    responsible: ["agent-browser-clawdbot"]
+    
+  - phase: "部署上线"
+    duration: "1小时"
+    responsible: ["agent-autopilot", "agent-browser-clawdbot"]
+
+communication:
+  system: "team-communication"
+  channels:
+    - "任务状态同步"
+    - "进度报告"
+    - "问题反馈"
+    - "知识分享"
+  
+  frequency: "实时"
+  logging: "启用"
+
+monitoring:
+  - "任务完成率"
+  - "代码质量"
+  - "响应时间"
+  - "团队协作度"
+  - "资源使用率"

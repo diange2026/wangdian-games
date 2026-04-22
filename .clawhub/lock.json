@@ -72,6 +72,14 @@
     "todo-management": {
       "version": "1.1.3",
       "installedAt": 1776777868532
+    },
+    "team-communication": {
+      "version": "1.0.0",
+      "installedAt": 1776853202343
+    },
+    "openclaw-team-builder": {
+      "version": "3.6.1",
+      "installedAt": 1776853202401
     }
   }
 }
