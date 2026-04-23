@@ -82,6 +82,57 @@ const routes: RouteRecordRaw[] = [
         ]
       },
       {
+        path: 'personnel',
+        name: 'Personnel',
+        redirect: '/personnel/list',
+        meta: {
+          title: '人员管理',
+          icon: 'User',
+          requiresAuth: true
+        },
+        children: [
+          {
+            path: 'list',
+            name: 'PersonnelList',
+            component: () => import('../views/personnel/List.vue'),
+            meta: {
+              title: '人员列表',
+              requiresAuth: true
+            }
+          },
+          {
+            path: 'create',
+            name: 'PersonnelCreate',
+            component: () => import('../views/personnel/Create.vue'),
+            meta: {
+              title: '新增人员',
+              requiresAuth: true,
+              hidden: true
+            }
+          },
+          {
+            path: 'edit/:id',
+            name: 'PersonnelEdit',
+            component: () => import('../views/personnel/Edit.vue'),
+            meta: {
+              title: '编辑人员',
+              requiresAuth: true,
+              hidden: true
+            }
+          },
+          {
+            path: 'detail/:id',
+            name: 'PersonnelDetail',
+            component: () => import('../views/personnel/Detail.vue'),
+            meta: {
+              title: '人员详情',
+              requiresAuth: true,
+              hidden: true
+            }
+          }
+        ]
+      },
+      {
         path: 'certificates',
         name: 'Certificates',
         redirect: '/certificates/list',

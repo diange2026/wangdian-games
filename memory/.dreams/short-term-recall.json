@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-04-22T09:01:22.205Z",
+  "updatedAt": "2026-04-23T01:53:42.337Z",
   "entries": {
     "memory:memory/2026-03-28.md:82:131": {
       "key": "memory:memory/2026-03-28.md:82:131",
@@ -9,18 +9,20 @@
       "endLine": 131,
       "source": "memory",
       "snippet": "| **中午备份** | 12:30 PM | Git 自动 commit + push workspace | ### 运维脚本 - **位置**: `/root/.openclaw/workspace/scripts/ops-maintenance.sh` - **功能**: - 系统资源检查（CPU、内存、磁盘） - 服务状态检查（OpenClaw Gateway、进程数） - 自动清理（日志、缓存、临时文件） - 备份验证（Git 本地/远程同步状态） - 网络检查（外网连通性、GitHub 连通性） - 告警检测（资源使用率告警） ### 监测指标 - **资源告警**: 内存>80%、磁盘>80% - **服务监控**: OpenClaw Gateway 状态、进程数 - **网络检查**: 外网连通性、GitHub 连通性 - **备份验证**: Git 本地/远程同步状态 ### 备份策略 - **频率**: 每日 2 次（2:00 AM + 12:30 PM） - **仓库**: https://github.com/diange2026/wangdian-games - **内容**: workspace 所有文件（记忆、代码、配置） - **恢复**: 重装系统后可从 GitHub 完整恢复 ### 日志位置 - **运维日志**: `/var/log/openclaw-ops.log` - **备份日志**: `/root/.openclaw/logs/backup.log` ### 文档 - **运维文档*",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-04-22T09:01:22.205Z",
-      "lastRecalledAt": "2026-04-22T09:01:22.205Z",
+      "lastRecalledAt": "2026-04-23T01:53:42.337Z",
       "queryHashes": [
-        "ed18c8057eb4"
+        "ed18c8057eb4",
+        "11243c6dd61e"
       ],
       "recallDays": [
-        "2026-04-22"
+        "2026-04-22",
+        "2026-04-23"
       ],
       "conceptTags": [
         "backup",
@@ -93,6 +95,37 @@
         "返回",
         "undefined",
         "结论"
+      ]
+    },
+    "memory:memory/2026-03-28.md:57:90": {
+      "key": "memory:memory/2026-03-28.md:57:90",
+      "path": "memory/2026-03-28.md",
+      "startLine": 57,
+      "endLine": 90,
+      "source": "memory",
+      "snippet": "3. **Gitee Pages 部署** - 典哥考虑注册 Gitee，但还没开始操作 ## 📝 学到的东西 - 典哥偏好国产服务（Gitee > Netlify） - 典哥希望我能\"全权操作\"，但需要平衡安全性和便利性 - 典哥对技术细节有好奇心（问权限、记忆系统、浏览器自动化） ## 🎯 下一步行动 - [ ] 等典哥决定如何部署游戏（Gitee 或其他方式） - [ ] 如果典哥注册 Gitee，指导他完成 Pages 部署 - [ ] 持续修复云存储上传问题 ## 💭 感想 典哥是个务实的人，关心实际能做什么、怎么交付成果。对话很直接，不绕弯子。需要继续保持\"友好、靠谱、话不多\"的风格。 --- ## 🖥️ 系统监测和自动运维（已配置） ### 自动化任务（3 个） | 任务 | 执行时间 | 说明 | |------|---------|------| | **凌晨备份** | 2:00 AM | Git 自动 commit + push workspace | | **系统健康检查** | 6:00 AM | 资源检查 + 清理 + 生成报告 | | **中午备份** | 12:30 PM | Git 自动 commit + push workspace | ### 运维脚本 - **位置**: `/root/.openclaw/workspace/scripts/ops-maintenance.sh` - **功能**: - 系统资源检查（CPU、内存、磁盘） - 服务状态检查（OpenClaw Gateway、进程数）",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-23T01:53:42.337Z",
+      "lastRecalledAt": "2026-04-23T01:53:42.337Z",
+      "queryHashes": [
+        "11243c6dd61e"
+      ],
+      "recallDays": [
+        "2026-04-23"
+      ],
+      "conceptTags": [
+        "gateway",
+        "备份",
+        "gitee",
+        "pages",
+        "部署",
+        "考虑",
+        "注册",
+        "开始"
       ]
     }
   }
